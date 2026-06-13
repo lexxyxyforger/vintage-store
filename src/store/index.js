@@ -23,9 +23,20 @@ import {
   serverTimestamp,
 } from 'firebase/firestore'
 
+async function fetchRoleFromToken(user) {
+  if (!user) return null
+  try {
+    const result = await user.getIdTokenResult()
+    return result.claims.role || 'user'
+  } catch {
+    return 'user'
+  }
+}
+
 const store = createStore({
   state: {
     user: null,
+    userRole: null,
     authLoading: true,
     cartItems: [],
     cartLoading: false,
@@ -43,7 +54,10 @@ const store = createStore({
     userName: (state) => state.user?.displayName || '',
     userEmail: (state) => state.user?.email || '',
     userPhoto: (state) => state.user?.photoURL || '',
-    isAdmin: (state) => (state.user?.email || '') === 'yolo@gmail.com',
+    userRole: (state) => state.userRole || 'user',
+    isAdmin: (state) => state.userRole === 'superadmin',
+    isSeller: (state) => state.userRole === 'seller',
+    isSuperadmin: (state) => state.userRole === 'superadmin',
 
     cartCount: (state) => state.cartItems.reduce((sum, i) => sum + i.quantity, 0),
     cartSubtotal: (state) => state.cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0),
@@ -55,6 +69,7 @@ const store = createStore({
 
   mutations: {
     SET_USER(state, user) { state.user = user },
+    SET_USER_ROLE(state, role) { state.userRole = role },
     SET_AUTH_LOADING(state, val) { state.authLoading = val },
     SET_CART_ITEMS(state, items) { state.cartItems = items },
     SET_CART_LOADING(state, val) { state.cartLoading = val },
@@ -78,28 +93,37 @@ const store = createStore({
   },
 
   actions: {
-    async register({ commit }, { email, password, name }) {
+    async fetchUserRole({ commit }) {
+      const role = await fetchRoleFromToken(auth.currentUser)
+      commit('SET_USER_ROLE', role)
+    },
+
+    async register({ dispatch, commit }, { email, password, name }) {
       const cred = await createUserWithEmailAndPassword(auth, email, password)
       await updateProfile(cred.user, { displayName: name })
       commit('SET_USER', cred.user)
+      await dispatch('fetchUserRole')
       return cred.user
     },
 
-    async login({ commit }, { email, password }) {
+    async login({ dispatch, commit }, { email, password }) {
       const cred = await signInWithEmailAndPassword(auth, email, password)
       commit('SET_USER', cred.user)
+      await dispatch('fetchUserRole')
       return cred.user
     },
 
-    async loginWithGoogle({ commit }) {
+    async loginWithGoogle({ dispatch, commit }) {
       const cred = await signInWithPopup(auth, googleProvider)
       commit('SET_USER', cred.user)
+      await dispatch('fetchUserRole')
       return cred.user
     },
 
     async logout({ commit }) {
       await signOut(auth)
       commit('SET_USER', null)
+      commit('SET_USER_ROLE', null)
     },
 
     async updateProfile({ commit }, { displayName, photoURL }) {
@@ -207,12 +231,13 @@ const store = createStore({
       }
     },
 
-    async addProduct({ commit }, payload) {
+    async addProduct({ getters, commit }, payload) {
       const ref = doc(collection(db, 'products'))
-      commit('SET_PRODUCT', { id: ref.id, ...payload })
+      const data = { ...payload, sellerId: getters.userId, sellerName: getters.userName }
+      commit('SET_PRODUCT', { id: ref.id, ...data })
       commit('SET_PRODUCTS_LOADED', true)
       try {
-        await setDoc(ref, payload)
+        await setDoc(ref, data)
       } catch (e) {
         commit('REMOVE_PRODUCT', ref.id)
         console.error('Failed to save product:', e)
@@ -456,8 +481,13 @@ const store = createStore({
   },
 })
 
-onAuthStateChanged(auth, (firebaseUser) => {
+onAuthStateChanged(auth, async (firebaseUser) => {
   store.commit('SET_USER', firebaseUser)
+  if (firebaseUser) {
+    await store.dispatch('fetchUserRole')
+  } else {
+    store.commit('SET_USER_ROLE', null)
+  }
   store.commit('SET_AUTH_LOADING', false)
 })
 

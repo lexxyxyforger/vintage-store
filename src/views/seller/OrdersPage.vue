@@ -1,26 +1,36 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 import { db } from '@/firebase'
 import { collection, getDocs, orderBy, query } from 'firebase/firestore'
 
 const router = useRouter()
+const store = useStore()
 const orders = ref([])
 const loading = ref(true)
 const statusFilter = ref('')
 
 const statuses = ['Processed', 'Shipped', 'Delivered', 'Cancelled']
+const statusLabels = { Processed: 'Diproses', Shipped: 'Dikirim', Delivered: 'Terkirim', Cancelled: 'Dibatalkan' }
 
-onMounted(async () => {
-  await loadOrders()
-})
+onMounted(loadOrders)
 
 async function loadOrders() {
   loading.value = true
   try {
+    await store.dispatch('fetchProducts')
+    const myProductIds = store.state.products
+      .filter((p) => p.sellerId === store.getters.userId)
+      .map((p) => p.id)
+
     const q = query(collection(db, 'transactions'), orderBy('createdAt', 'desc'))
     const snap = await getDocs(q)
-    orders.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+    const allOrders = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+
+    orders.value = allOrders.filter((o) =>
+      o.items?.some((item) => myProductIds.includes(item.productId))
+    )
   } finally {
     loading.value = false
   }
@@ -40,7 +50,7 @@ const totalRevenue = computed(() => {
 
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h1 class="text-2xl font-bold text-stone-900 mb-6">Pesanan</h1>
+    <h1 class="text-2xl font-bold text-stone-900 mb-6">Pesanan Saya</h1>
 
     <div class="flex flex-wrap items-center gap-4 mb-6">
       <select
@@ -48,7 +58,7 @@ const totalRevenue = computed(() => {
         class="px-4 py-2.5 border border-stone-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all"
       >
         <option value="">Semua Status</option>
-        <option v-for="s in statuses" :key="s" :value="s">{{ s }}</option>
+        <option v-for="s in statuses" :key="s" :value="s">{{ statusLabels[s] }}</option>
       </select>
       <p class="text-sm text-stone-500">
         {{ filteredOrders.length }} pesanan
@@ -63,20 +73,20 @@ const totalRevenue = computed(() => {
     </div>
 
     <div v-else-if="filteredOrders.length === 0" class="bg-white rounded-xl border border-stone-200 p-12 text-center text-stone-400">
-      <p class="font-medium">Tidak ada pesanan ditemukan</p>
+      <p class="font-medium">Belum ada pesanan untuk produk Anda</p>
     </div>
 
     <div v-else class="space-y-4">
       <div
         v-for="order in filteredOrders"
         :key="order.id"
-        @click="router.push({ name: 'admin-order-detail', params: { id: order.id } })"
+        @click="router.push({ name: 'seller-order-detail', params: { id: order.id } })"
         class="bg-white rounded-xl border border-stone-200 p-5 hover:shadow-md transition-shadow cursor-pointer"
       >
         <div class="flex items-start justify-between mb-2">
           <div>
             <p class="text-xs text-stone-400 font-mono">#{{ order.id.slice(-8) }}</p>
-            <p class="font-semibold text-stone-900">{{ order.userName || 'Pengguna' }}</p>
+            <p class="font-semibold text-stone-900">{{ order.userName || 'User' }}</p>
           </div>
           <span
             class="text-xs font-semibold px-3 py-1.5 rounded-full"
@@ -87,11 +97,11 @@ const totalRevenue = computed(() => {
               'bg-red-100 text-red-700': order.status === 'Cancelled',
             }"
           >
-            {{ order.status }}
+            {{ statusLabels[order.status] || order.status }}
           </span>
         </div>
         <div class="flex items-center justify-between text-sm">
-          <span class="text-stone-500">{{ order.items?.length || 0 }} item</span>
+          <span class="text-stone-500">{{ order.items?.length || 0 }} barang</span>
           <span class="font-bold text-stone-900">Rp{{ (order.total || 0).toLocaleString('id-ID') }}</span>
         </div>
         <p class="text-xs text-stone-400 mt-1">

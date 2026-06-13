@@ -11,9 +11,7 @@ const statusFilter = ref('')
 
 const statuses = ['Processed', 'Shipped', 'Delivered', 'Cancelled']
 
-onMounted(async () => {
-  await loadOrders()
-})
+onMounted(loadOrders)
 
 async function loadOrders() {
   loading.value = true
@@ -40,20 +38,20 @@ const totalRevenue = computed(() => {
 
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h1 class="text-2xl font-bold text-stone-900 mb-6">Pesanan</h1>
+    <h1 class="text-2xl font-bold text-stone-900 mb-6">All Orders</h1>
 
     <div class="flex flex-wrap items-center gap-4 mb-6">
       <select
         v-model="statusFilter"
         class="px-4 py-2.5 border border-stone-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all"
       >
-        <option value="">Semua Status</option>
+        <option value="">All Status</option>
         <option v-for="s in statuses" :key="s" :value="s">{{ s }}</option>
       </select>
       <p class="text-sm text-stone-500">
-        {{ filteredOrders.length }} pesanan
+        {{ filteredOrders.length }} orders
         <span v-if="!statusFilter" class="ml-2 text-brand-600 font-semibold">
-          &middot; Pendapatan: Rp{{ totalRevenue.toLocaleString('id-ID') }}
+          &middot; Revenue: Rp{{ totalRevenue.toLocaleString('id-ID') }}
         </span>
       </p>
     </div>
@@ -63,20 +61,20 @@ const totalRevenue = computed(() => {
     </div>
 
     <div v-else-if="filteredOrders.length === 0" class="bg-white rounded-xl border border-stone-200 p-12 text-center text-stone-400">
-      <p class="font-medium">Tidak ada pesanan ditemukan</p>
+      <p class="font-medium">No orders found</p>
     </div>
 
     <div v-else class="space-y-4">
       <div
         v-for="order in filteredOrders"
         :key="order.id"
-        @click="router.push({ name: 'admin-order-detail', params: { id: order.id } })"
+        @click="router.push({ name: 'superadmin-order-detail', params: { id: order.id } })"
         class="bg-white rounded-xl border border-stone-200 p-5 hover:shadow-md transition-shadow cursor-pointer"
       >
         <div class="flex items-start justify-between mb-2">
           <div>
             <p class="text-xs text-stone-400 font-mono">#{{ order.id.slice(-8) }}</p>
-            <p class="font-semibold text-stone-900">{{ order.userName || 'Pengguna' }}</p>
+            <p class="font-semibold text-stone-900">{{ order.userName || 'User' }}</p>
           </div>
           <span
             class="text-xs font-semibold px-3 py-1.5 rounded-full"
@@ -91,7 +89,7 @@ const totalRevenue = computed(() => {
           </span>
         </div>
         <div class="flex items-center justify-between text-sm">
-          <span class="text-stone-500">{{ order.items?.length || 0 }} item</span>
+          <span class="text-stone-500">{{ order.items?.length || 0 }} items</span>
           <span class="font-bold text-stone-900">Rp{{ (order.total || 0).toLocaleString('id-ID') }}</span>
         </div>
         <p class="text-xs text-stone-400 mt-1">

@@ -62,15 +62,15 @@ async function changePassword() {
       class="inline-flex items-center gap-1.5 text-stone-500 hover:text-brand-600 text-sm font-medium mb-6 transition-colors"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-      Back to Profile
+      Kembali ke Profil
     </button>
 
-    <h1 class="text-2xl font-bold text-stone-900 mb-8">Edit Profile</h1>
+    <h1 class="text-2xl font-bold text-stone-900 mb-8">Edit Profil</h1>
 
     <div class="bg-white rounded-xl border border-stone-200 p-6 mb-6">
       <form @submit.prevent="saveProfile" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-stone-700 mb-1.5">Display Name</label>
+          <label class="block text-sm font-medium text-stone-700 mb-1.5">Nama Tampilan</label>
           <input
             v-model="displayName"
             type="text"
@@ -79,7 +79,7 @@ async function changePassword() {
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-stone-700 mb-1.5">Photo URL</label>
+          <label class="block text-sm font-medium text-stone-700 mb-1.5">URL Foto</label>
           <input
             v-model="photoURL"
             type="url"
@@ -97,32 +97,32 @@ async function changePassword() {
           :disabled="saving"
           class="bg-brand-600 text-white px-8 py-2.5 rounded-xl font-medium hover:bg-brand-700 disabled:opacity-50 transition-colors shadow-sm"
         >
-          {{ saving ? 'Saving...' : 'Save Changes' }}
+          {{ saving ? 'Menyimpan...' : 'Simpan Perubahan' }}
         </button>
       </form>
     </div>
 
     <div class="bg-white rounded-xl border border-stone-200 p-6">
-      <h2 class="text-lg font-bold text-stone-900 mb-4">Change Password</h2>
+      <h2 class="text-lg font-bold text-stone-900 mb-4">Ubah Kata Sandi</h2>
       <form @submit.prevent="changePassword" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-stone-700 mb-1.5">New Password</label>
+          <label class="block text-sm font-medium text-stone-700 mb-1.5">Kata Sandi Baru</label>
           <input
             v-model="newPassword"
             type="password"
             required
             minlength="6"
-            placeholder="Min. 6 characters"
+            placeholder="Min. 6 karakter"
             class="w-full px-4 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all"
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-stone-700 mb-1.5">Confirm Password</label>
+          <label class="block text-sm font-medium text-stone-700 mb-1.5">Konfirmasi Kata Sandi</label>
           <input
             v-model="confirmPassword"
             type="password"
             required
-            placeholder="Re-enter password"
+            placeholder="Masukkan ulang kata sandi"
             class="w-full px-4 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all"
           />
         </div>
@@ -135,7 +135,7 @@ async function changePassword() {
           :disabled="changingPassword"
           class="bg-brand-600 text-white px-8 py-2.5 rounded-xl font-medium hover:bg-brand-700 disabled:opacity-50 transition-colors shadow-sm"
         >
-          {{ changingPassword ? 'Changing...' : 'Change Password' }}
+          {{ changingPassword ? 'Mengubah...' : 'Ubah Kata Sandi' }}
         </button>
       </form>
     </div>

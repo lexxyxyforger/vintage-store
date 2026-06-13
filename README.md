@@ -1,6 +1,6 @@
 # 🛍️ Vintage — Thrift Fashion E-Commerce
 
-**Single-page aplikasi e-commerce fashion vintage** yang dibangun dengan Vue 3, Firebase, dan Tailwind CSS. Cepat, real-time, dan siap produksi.
+**Single-page aplikasi e-commerce fashion vintage** yang dibangun dengan Vue 3, Firebase, dan Tailwind CSS. Cepat, real-time, dan siap produksi. Mendukung **3 level akses: Superadmin, Seller, dan User**.
 
 ---
 
@@ -43,12 +43,22 @@
 - **Riwayat pesanan** — daftar pesanan dengan status color-coded, klik untuk detail.
 - **Detail pesanan** — timeline status, alamat, metode bayar, item, dan ringkasan harga.
 
-### 🛠️ Admin (`yolo@gmail.com`)
-- **Dashboard** — 4 kartu statistik (Total Produk, Kategori, Wishlist, Transaksi) + daftar produk terbaru.
-- **CRUD produk** — form lengkap dengan nama, kategori (dropdown), harga, stok, ongkir, warna/ukuran (comma-separated), URL gambar (live preview), deskripsi.
-- **CRUD kategori** — inline form di halaman yang sama.
-- **Manajemen pesanan** — daftar semua pesanan, filter status, revenue tracker, update status (Processed → Shipped → Delivered / Cancelled).
-- **Seed tool** (`/admin/seed`) — populate 16 sample produk vintage sekaligus.
+### 👑 Superadmin (`/superadmin/*`)
+Mengelola seluruh platform:
+- **Dashboard** — statistik global (produk, kategori, seller, orders, revenue).
+- **Manajemen Seller** — lihat semua user, ubah role (user/seller), pantau seller aktif.
+- **Lihat Semua Produk** — filter by kategori, seller, nama.
+- **CRUD Kategori** — kelola kategori produk.
+- **Semua Pesanan** — lihat & update status semua transaksi.
+
+### 🛠️ Seller (`/seller/*`)
+Fokus pada produk sendiri:
+- **Dashboard** — statistik produk & revenue sendiri.
+- **CRUD produk** — tambah/edit/hapus produk (otomatis tercatat sebagai produk seller).
+- **Pesanan masuk** — lihat pesanan yang berisi produknya, update status.
+
+### 👤 User (`/profile/*`)
+- Manajemen profil, buku alamat, cart, wishlist, riwayat pesanan.
 
 ### 🚚 Alur Pesanan
 | Status | Deskripsi |
@@ -162,8 +172,8 @@ tugas-akhir-ta/
 
 | Collection | Document ID | Isi |
 |---|---|---|
-| `products` | auto | name, category, price, stock, color, size, shipping, image, description |
-| `categories` | auto | name, createdAt |
+| `users` | `${uid}` | email, displayName, photoURL, role (legacy — custom claims lebih diprioritaskan) |
+| `products` | auto | name, category, price, stock, color, size, shipping, image, description, sellerId, sellerName |
 | `carts` | `${userId}_${productId}` | userId, productId, name, price, quantity, image, shipping, color, size |
 | `wishlists` | auto | userId, productId, createdAt |
 | `addresses` | auto | userId, label, address, city, postalCode, phone, isDefault, createdAt |
@@ -229,9 +239,25 @@ npm run build
 firebase deploy --only hosting
 ```
 
-### 7. Admin Access
+### 7. Role-Based Access
 
-Hanya user dengan email **`yolo@gmail.com`** yang memiliki akses admin. Registrasi melalui aplikasi, lalu login menggunakan email tersebut untuk mengakses halaman `/admin/*`.
+Aplikasi memiliki **3 level akses** berdasarkan **Firebase Auth custom claims** (field `role` di token):
+
+| Role | Akses |
+|---|---|
+| `user` (default) | Halaman publik + `/profile/*`, `/orders/*`, `/cart`, `/wishlist` |
+| `seller` | Halaman user + `/seller/*` (kelola produk & pesanan sendiri) |
+| `superadmin` | Segala akses + `/superadmin/*` (kelola seluruh platform) |
+
+**Setup awal:**
+1. Role disimpan sebagai custom claims di Firebase Auth — **tidak pakai Firestore**.
+2. Setelah login, role dibaca dari `user.getIdTokenResult().claims.role`.
+3. Ubah role via CLI (butuh service account key):
+   ```sh
+   npm run bootstrap:superadmin email@example.com seller
+   npm run bootstrap:superadmin email@example.com superadmin
+   ```
+4. Superadmin juga bisa generate perintah CLI dari halaman `/superadmin/sellers`.
 
 ---
 
@@ -248,4 +274,6 @@ Hanya user dengan email **`yolo@gmail.com`** yang memiliki akses admin. Registra
 | **Pagination** | 12 produk per halaman (client-side) |
 | **Page transitions** | Fade + translateY di `App.vue` |
 | **Firebase creds** | Hardcoded di `src/firebase.js` (tanpa `.env`) |
-| **Admin check** | Client-side via `store.getters.isAdmin` (Firestore rules tidak meng-enforce admin) |
+| **Role check** | Client-side via `store.getters.isSuperadmin` / `store.getters.isSeller` (dari Auth custom claims) |
+| **Role default** | Semua user baru mendapat role `user` (custom claims di-set via Admin SDK) |
+| **Bootstrap role** | `npm run bootstrap:superadmin <email> <role>` — pakai Admin SDK service account |

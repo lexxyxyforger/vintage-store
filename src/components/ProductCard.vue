@@ -121,10 +121,10 @@ function goToDetail() {
         </svg>
       </button>
       <div v-if="product.stock !== undefined && product.stock <= 0" class="absolute bottom-3 left-3 bg-red-500/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-sm">
-        Out of Stock
+        Stok Habis
       </div>
       <div v-else-if="product.stock !== undefined && product.stock <= 5" class="absolute bottom-3 left-3 bg-amber-500/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-sm">
-        Low Stock
+        Stok Terbatas
       </div>
     </div>
     <div class="p-4">

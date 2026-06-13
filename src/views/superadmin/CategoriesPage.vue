@@ -9,9 +9,7 @@ const showForm = ref(false)
 const editing = ref(null)
 const formName = ref('')
 
-onMounted(async () => {
-  await loadCategories()
-})
+onMounted(loadCategories)
 
 async function loadCategories() {
   loading.value = true
@@ -45,9 +43,7 @@ function cancelForm() {
 }
 
 async function saveCategory() {
-  if (!formName.value.trim()) {
-    return
-  }
+  if (!formName.value.trim()) return
   if (editing.value) {
     await setDoc(doc(db, 'categories', editing.value), { name: formName.value.trim() }, { merge: true })
   } else {
@@ -67,31 +63,31 @@ async function removeCategory(id, name) {
 <template>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-stone-900">Kategori</h1>
+      <h1 class="text-2xl font-bold text-stone-900">Categories</h1>
       <button
         @click="openAdd"
         class="bg-brand-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-brand-700 transition-colors shadow-sm flex items-center gap-2"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-        Tambah Kategori
+        Add Category
       </button>
     </div>
 
-    <div v-if="showForm" class="bg-white rounded-xl border border-stone-200 p-6 mb-6 animate-fade-in">
-      <h2 class="font-semibold text-stone-900 mb-4">{{ editing ? 'Edit Kategori' : 'Kategori Baru' }}</h2>
+    <div v-if="showForm" class="bg-white rounded-xl border border-stone-200 p-6 mb-6">
+      <h2 class="font-semibold text-stone-900 mb-4">{{ editing ? 'Edit Category' : 'New Category' }}</h2>
       <form @submit.prevent="saveCategory" class="flex gap-3">
         <input
           v-model="formName"
           type="text"
           required
-          placeholder="Nama kategori"
+          placeholder="Category name"
           class="flex-1 px-4 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all"
         />
         <button type="submit" class="bg-brand-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-brand-700 transition-colors shadow-sm">
-          {{ editing ? 'Simpan' : 'Tambah' }}
+          {{ editing ? 'Save' : 'Add' }}
         </button>
         <button type="button" @click="cancelForm" class="px-6 py-2.5 border border-stone-200 rounded-xl text-stone-700 hover:bg-stone-50 transition-colors">
-          Batal
+          Cancel
         </button>
       </form>
     </div>
@@ -101,15 +97,15 @@ async function removeCategory(id, name) {
     </div>
 
     <div v-else-if="categories.length === 0" class="bg-white rounded-xl border border-stone-200 p-12 text-center text-stone-400">
-      <p class="font-medium">Belum ada kategori</p>
+      <p class="font-medium">No categories yet</p>
     </div>
 
     <div v-else class="bg-white rounded-xl border border-stone-200 overflow-hidden">
       <table class="w-full text-sm">
         <thead class="bg-stone-50 text-stone-500 text-xs uppercase tracking-wider">
           <tr>
-            <th class="text-left px-6 py-3 font-medium">Nama</th>
-            <th class="text-right px-6 py-3 font-medium">Aksi</th>
+            <th class="text-left px-6 py-3 font-medium">Name</th>
+            <th class="text-right px-6 py-3 font-medium">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-stone-100">

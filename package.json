@@ -12,10 +12,12 @@
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",
     "lint:eslint": "eslint . --fix --cache",
-    "format": "prettier --write --experimental-cli src/"
+    "format": "prettier --write --experimental-cli src/",
+    "bootstrap:superadmin": "node scripts/bootstrap-superadmin.js"
   },
   "dependencies": {
     "firebase": "^12.14.0",
+    "firebase-admin": "^13.10.0",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4",
     "vuex": "^4.1.0"

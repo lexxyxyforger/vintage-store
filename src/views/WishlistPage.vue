@@ -51,11 +51,11 @@ async function removeWishlist(wishlistId) {
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <div class="flex items-center justify-between mb-8">
       <div>
-        <h1 class="text-2xl font-bold text-stone-900">Wishlist</h1>
-        <p v-if="!loading" class="text-sm text-stone-500 mt-1">{{ wishlistProducts.length }} items</p>
+        <h1 class="text-2xl font-bold text-stone-900">Favorit</h1>
+        <p v-if="!loading" class="text-sm text-stone-500 mt-1">{{ wishlistProducts.length }} item</p>
       </div>
       <router-link to="/" class="text-sm text-brand-600 hover:text-brand-700 font-medium transition-colors">
-        &larr; Continue Shopping
+        &larr; Lanjutkan Belanja
       </router-link>
     </div>
 
@@ -74,9 +74,9 @@ async function removeWishlist(wishlistId) {
       <svg class="w-20 h-20 mx-auto mb-4 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
       </svg>
-      <p class="text-lg font-medium mb-2">Your wishlist is empty.</p>
+      <p class="text-lg font-medium mb-2">Favorit Anda kosong</p>
       <router-link to="/" class="text-brand-600 hover:text-brand-700 font-medium transition-colors">
-        Browse products &rarr;
+        Lihat produk &rarr;
       </router-link>
     </div>
 
@@ -89,7 +89,7 @@ async function removeWishlist(wishlistId) {
         <button
           @click="removeWishlist(product.wishlistId)"
           class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full p-1.5 shadow hover:bg-red-50 transition-colors z-10"
-          title="Remove from wishlist"
+          title="Hapus dari favorit"
         >
           <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />

@@ -25,8 +25,8 @@ const emit = defineEmits(['confirm', 'cancel'])
               </svg>
             </div>
             <div>
-              <h2 class="text-lg font-bold text-stone-900">Sign Out</h2>
-              <p class="text-sm text-stone-500">Are you sure you want to sign out?</p>
+              <h2 class="text-lg font-bold text-stone-900">Keluar</h2>
+              <p class="text-sm text-stone-500">Apakah Anda yakin ingin keluar?</p>
             </div>
           </div>
           <div class="flex gap-3 justify-end mt-6">
@@ -34,13 +34,13 @@ const emit = defineEmits(['confirm', 'cancel'])
               @click="emit('cancel')"
               class="px-5 py-2 rounded-xl border border-stone-300 text-stone-700 hover:bg-stone-50 text-sm font-medium transition-colors"
             >
-              Cancel
+              Batal
             </button>
             <button
               @click="emit('confirm')"
               class="px-5 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700 text-sm font-medium transition-colors shadow-sm"
             >
-              Sign Out
+              Keluar
             </button>
           </div>
         </div>

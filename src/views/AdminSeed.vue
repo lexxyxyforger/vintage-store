@@ -30,15 +30,21 @@ const products = [
 
 async function seed() {
   loading.value = true
-  status.value = 'Adding products...'
+  status.value = 'Menambahkan produk...'
   try {
-    const batch = products.map((p) => addDoc(collection(db, 'products'), p))
+    const batch = products.map((p) =>
+      addDoc(collection(db, 'products'), {
+        ...p,
+        sellerId: store.getters.userId,
+        sellerName: store.getters.userName,
+      })
+    )
     await Promise.all(batch)
     store.commit('SET_PRODUCTS_LOADED', false)
     seeded.value = true
-    status.value = `Successfully added ${products.length} products!`
+    status.value = `Berhasil menambahkan ${products.length} produk!`
   } catch (e) {
-    status.value = 'Failed: ' + e.message
+    status.value = 'Gagal: ' + e.message
   } finally {
     loading.value = false
   }
@@ -47,22 +53,22 @@ async function seed() {
 
 <template>
   <div class="max-w-lg mx-auto px-6 py-20 text-center">
-    <h1 class="text-2xl font-bold text-stone-900 mb-4">Product Seeder</h1>
+    <h1 class="text-2xl font-bold text-stone-900 mb-4">Seeder Produk</h1>
 
     <div v-if="!store.getters.isLoggedIn" class="text-stone-500">
-      You must <router-link to="/login" class="text-brand-600 underline hover:text-brand-700">login</router-link> first to add products.
+      Anda harus <router-link to="/login" class="text-brand-600 underline hover:text-brand-700">masuk</router-link> terlebih dahulu untuk menambahkan produk.
     </div>
 
     <div v-else-if="!seeded" class="space-y-4">
       <p class="text-stone-600">
-        Click the button below to add {{ products.length }} vintage products to Firestore.
+        Klik tombol di bawah untuk menambahkan {{ products.length }} produk vintage ke Firestore.
       </p>
       <button
         @click="seed"
         :disabled="loading"
         class="bg-brand-600 text-white px-8 py-3 rounded-xl font-medium hover:bg-brand-700 disabled:opacity-50 transition-colors shadow-sm"
       >
-        {{ loading ? 'Processing...' : 'Add Products' }}
+        {{ loading ? 'Memproses...' : 'Tambah Produk' }}
       </button>
       <p v-if="status" class="text-sm text-stone-500">{{ status }}</p>
     </div>
@@ -70,7 +76,7 @@ async function seed() {
     <div v-else class="text-emerald-600">
       <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
       <p class="text-lg font-semibold mb-2">{{ status }}</p>
-      <router-link to="/" class="text-brand-600 underline hover:text-brand-700 transition-colors">View on Homepage &rarr;</router-link>
+      <router-link to="/" class="text-brand-600 underline hover:text-brand-700 transition-colors">Lihat di Beranda &rarr;</router-link>
     </div>
   </div>
 </template>

@@ -109,38 +109,38 @@ async function placeOrder() {
     <div class="flex items-center gap-3 mb-8 text-sm">
       <div class="flex items-center gap-2" :class="step >= 1 ? 'text-brand-600' : 'text-stone-400'">
         <span class="flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold" :class="step >= 1 ? 'bg-brand-600 text-white' : 'bg-stone-200 text-stone-500'">1</span>
-        <span class="font-semibold">Address</span>
+        <span class="font-semibold">Alamat</span>
       </div>
       <div class="w-8 h-px bg-stone-300" />
       <div class="flex items-center gap-2" :class="step >= 2 ? 'text-brand-600' : 'text-stone-400'">
         <span class="flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold" :class="step >= 2 ? 'bg-brand-600 text-white' : 'bg-stone-200 text-stone-500'">2</span>
-        <span class="font-semibold">Payment</span>
+        <span class="font-semibold">Pembayaran</span>
       </div>
       <div class="w-8 h-px bg-stone-300" />
       <div class="flex items-center gap-2" :class="step >= 3 ? 'text-brand-600' : 'text-stone-400'">
         <span class="flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold" :class="step >= 3 ? 'bg-brand-600 text-white' : 'bg-stone-200 text-stone-500'">3</span>
-        <span class="font-semibold">Review</span>
+        <span class="font-semibold">Tinjau</span>
       </div>
     </div>
 
     <div v-if="step === 1" class="space-y-6">
       <div class="bg-white rounded-xl border border-stone-200 p-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-bold text-stone-900">Shipping Address</h2>
+          <h2 class="text-lg font-bold text-stone-900">Alamat Pengiriman</h2>
           <router-link
             to="/profile/addresses/create"
             class="text-sm text-brand-600 hover:text-brand-700 font-medium transition-colors"
           >
-            + Add New
+            + Tambah Baru
           </router-link>
         </div>
 
-        <div v-if="loadingAddresses" class="text-center py-8 text-stone-400">Loading addresses...</div>
+        <div v-if="loadingAddresses" class="text-center py-8 text-stone-400">Memuat alamat...</div>
 
         <div v-else-if="addresses.length === 0" class="text-center py-8 text-stone-400">
-          <p class="mb-2">No saved addresses</p>
+          <p class="mb-2">Belum ada alamat</p>
           <router-link to="/profile/addresses/create" class="text-brand-600 hover:text-brand-700 font-medium transition-colors">
-            Add your first address
+            Tambah alamat pertama
           </router-link>
         </div>
 
@@ -156,7 +156,7 @@ async function placeOrder() {
               <div>
                 <p class="font-medium text-stone-900">
                   {{ addr.label }}
-                  <span v-if="addr.isDefault" class="text-xs bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full ml-2 font-semibold">Default</span>
+                  <span v-if="addr.isDefault" class="text-xs bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full ml-2 font-semibold">Utama</span>
                 </p>
                 <p class="text-sm text-stone-600 mt-1">{{ addr.address }}</p>
                 <p class="text-sm text-stone-500">{{ addr.city }} {{ addr.postalCode }}</p>
@@ -178,19 +178,19 @@ async function placeOrder() {
           :disabled="!selectedAddress"
           class="bg-brand-600 text-white px-8 py-3 rounded-xl font-medium hover:bg-brand-700 disabled:opacity-50 transition-colors shadow-sm"
         >
-          Continue to Payment
+          Lanjut ke Pembayaran
         </button>
       </div>
     </div>
 
     <div v-if="step === 2" class="space-y-6">
       <div class="bg-white rounded-xl border border-stone-200 p-6">
-        <h2 class="text-lg font-bold text-stone-900 mb-4">Payment Method</h2>
+        <h2 class="text-lg font-bold text-stone-900 mb-4">Metode Pembayaran</h2>
         <div class="space-y-3">
           <label class="flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all" :class="paymentMethod === 'bank_transfer' ? 'border-brand-500 bg-brand-50' : 'border-stone-200 hover:border-stone-300'">
             <input type="radio" v-model="paymentMethod" value="bank_transfer" class="text-brand-600 accent-brand-600" />
             <div>
-              <p class="font-medium text-stone-900">Bank Transfer</p>
+              <p class="font-medium text-stone-900">Transfer Bank</p>
               <p class="text-sm text-stone-500">BCA, Mandiri, BNI, BRI</p>
             </div>
           </label>
@@ -198,14 +198,14 @@ async function placeOrder() {
             <input type="radio" v-model="paymentMethod" value="gopay" class="text-brand-600 accent-brand-600" />
             <div>
               <p class="font-medium text-stone-900">GoPay</p>
-              <p class="text-sm text-stone-500">Gojek digital wallet</p>
+              <p class="text-sm text-stone-500">Dompet digital Gojek</p>
             </div>
           </label>
           <label class="flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all" :class="paymentMethod === 'cod' ? 'border-brand-500 bg-brand-50' : 'border-stone-200 hover:border-stone-300'">
             <input type="radio" v-model="paymentMethod" value="cod" class="text-brand-600 accent-brand-600" />
             <div>
-              <p class="font-medium text-stone-900">Cash on Delivery (COD)</p>
-              <p class="text-sm text-stone-500">Pay when you receive</p>
+              <p class="font-medium text-stone-900">COD (Bayar di Tempat)</p>
+              <p class="text-sm text-stone-500">Bayar saat terima</p>
             </div>
           </label>
         </div>
@@ -213,25 +213,25 @@ async function placeOrder() {
 
       <div class="flex justify-between">
         <button @click="step = 1" class="px-8 py-3 border border-stone-200 rounded-xl text-stone-700 hover:bg-stone-50 transition-colors font-medium">
-          Back
+          Kembali
         </button>
         <button @click="step = 3" class="bg-brand-600 text-white px-8 py-3 rounded-xl font-medium hover:bg-brand-700 transition-colors shadow-sm">
-          Review Order
+          Tinjau Pesanan
         </button>
       </div>
     </div>
 
     <div v-if="step === 3" class="space-y-6">
       <div class="bg-white rounded-xl border border-stone-200 p-6">
-        <h2 class="text-lg font-bold text-stone-900 mb-4">Order Review</h2>
+        <h2 class="text-lg font-bold text-stone-900 mb-4">Tinjau Pesanan</h2>
 
         <div class="mb-4 p-4 bg-stone-50 rounded-xl">
-          <p class="text-sm font-medium text-stone-700 mb-1">Shipping to:</p>
+          <p class="text-sm font-medium text-stone-700 mb-1">Dikirim ke:</p>
           <p class="text-sm text-stone-600">{{ selectedAddress?.label }} - {{ selectedAddress?.address }}, {{ selectedAddress?.city }}</p>
         </div>
 
         <div class="mb-4 p-4 bg-stone-50 rounded-xl">
-          <p class="text-sm font-medium text-stone-700 mb-1">Payment:</p>
+          <p class="text-sm font-medium text-stone-700 mb-1">Pembayaran:</p>
           <p class="text-sm text-stone-600 capitalize">{{ paymentMethod.replace('_', ' ') }}</p>
         </div>
 
@@ -248,11 +248,11 @@ async function placeOrder() {
       </div>
 
       <div class="bg-white rounded-xl border border-stone-200 p-6">
-        <h3 class="font-semibold text-stone-900 mb-3">Promo Code</h3>
+        <h3 class="font-semibold text-stone-900 mb-3">Kode Promo</h3>
         <div class="flex gap-2">
           <input
             v-model="promoCode"
-            placeholder="Enter promo code"
+            placeholder="Masukkan kode promo"
             :disabled="promoApplied"
             class="flex-1 px-4 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 disabled:bg-stone-50 transition-all"
           />
@@ -261,15 +261,15 @@ async function placeOrder() {
             :disabled="promoApplied || !promoCode.trim()"
             class="px-5 py-2.5 border border-brand-600 text-brand-600 rounded-xl text-sm font-medium hover:bg-brand-50 disabled:opacity-40 transition-colors"
           >
-            {{ promoApplied ? 'Applied' : 'Apply' }}
+            {{ promoApplied ? 'Diterapkan' : 'Terapkan' }}
           </button>
         </div>
 
         <hr class="my-4 border-stone-200" />
         <div class="space-y-2 text-sm">
-          <div class="flex justify-between text-stone-600"><span>Subtotal ({{ cartItems.length }} items)</span><span class="font-medium">Rp{{ subtotal.toLocaleString('id-ID') }}</span></div>
-          <div class="flex justify-between text-stone-600"><span>Shipping</span><span class="font-medium">Rp{{ shipping.toLocaleString('id-ID') }}</span></div>
-          <div v-if="discount" class="flex justify-between text-emerald-600"><span>Discount</span><span class="font-medium">-Rp{{ discount.toLocaleString('id-ID') }}</span></div>
+          <div class="flex justify-between text-stone-600"><span>Subtotal ({{ cartItems.length }} item)</span><span class="font-medium">Rp{{ subtotal.toLocaleString('id-ID') }}</span></div>
+          <div class="flex justify-between text-stone-600"><span>Pengiriman</span><span class="font-medium">Rp{{ shipping.toLocaleString('id-ID') }}</span></div>
+          <div v-if="discount" class="flex justify-between text-emerald-600"><span>Diskon</span><span class="font-medium">-Rp{{ discount.toLocaleString('id-ID') }}</span></div>
           <hr class="border-stone-200" />
           <div class="flex justify-between font-bold text-lg text-stone-900"><span>Total</span><span class="text-brand-800">Rp{{ total.toLocaleString('id-ID') }}</span></div>
         </div>
@@ -277,7 +277,7 @@ async function placeOrder() {
 
       <div class="flex justify-between">
         <button @click="step = 2" class="px-8 py-3 border border-stone-200 rounded-xl text-stone-700 hover:bg-stone-50 transition-colors font-medium">
-          Back
+          Kembali
         </button>
         <button
           @click="placeOrder"
@@ -285,7 +285,7 @@ async function placeOrder() {
           class="bg-brand-600 text-white px-10 py-3 rounded-xl font-semibold hover:bg-brand-700 disabled:opacity-50 transition-all shadow-lg shadow-brand-600/20 flex items-center gap-2"
         >
           <svg v-if="saving" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-          {{ saving ? 'Processing...' : 'Place Order' }}
+          {{ saving ? 'Memproses...' : 'Buat Pesanan' }}
         </button>
       </div>
     </div>

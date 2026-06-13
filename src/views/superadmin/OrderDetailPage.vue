@@ -22,12 +22,12 @@ onMounted(async () => {
   try {
     const d = await getDoc(doc(db, 'transactions', route.params.id))
     if (!d.exists()) {
-      router.push({ name: 'admin-orders' })
+      router.push({ name: 'superadmin-orders' })
       return
     }
     order.value = { id: d.id, ...d.data() }
   } catch {
-    router.push({ name: 'admin-orders' })
+    router.push({ name: 'superadmin-orders' })
   } finally {
     loading.value = false
   }
@@ -46,11 +46,11 @@ async function updateStatus(status) {
 <template>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <button
-      @click="router.push({ name: 'admin-orders' })"
+      @click="router.push({ name: 'superadmin-orders' })"
       class="inline-flex items-center gap-1.5 text-stone-500 hover:text-brand-600 text-sm font-medium mb-6 transition-colors"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-      Kembali ke Pesanan
+      Back to Orders
     </button>
 
     <div v-if="loading" class="space-y-4">
@@ -70,7 +70,7 @@ async function updateStatus(status) {
         </div>
 
         <div class="mb-6">
-          <h2 class="text-sm font-semibold text-stone-700 mb-3">Perbarui Status</h2>
+          <h2 class="text-sm font-semibold text-stone-700 mb-3">Update Status</h2>
           <div class="flex flex-wrap gap-2">
             <button
               v-for="s in statuses"
@@ -87,12 +87,12 @@ async function updateStatus(status) {
 
         <div class="grid sm:grid-cols-2 gap-4 mb-6">
           <div class="p-4 bg-stone-50 rounded-xl">
-            <h3 class="text-sm font-semibold text-stone-700 mb-2">Pelanggan</h3>
+            <h3 class="text-sm font-semibold text-stone-700 mb-2">Customer</h3>
             <p class="text-sm text-stone-600">{{ order.userName || 'N/A' }}</p>
             <p class="text-sm text-stone-600">{{ order.userEmail || 'N/A' }}</p>
           </div>
           <div class="p-4 bg-stone-50 rounded-xl">
-            <h3 class="text-sm font-semibold text-stone-700 mb-2">Alamat Pengiriman</h3>
+            <h3 class="text-sm font-semibold text-stone-700 mb-2">Shipping Address</h3>
             <p class="text-sm text-stone-600">{{ order.shippingAddress?.label || 'N/A' }}</p>
             <p class="text-sm text-stone-600">{{ order.shippingAddress?.address || '' }}</p>
             <p class="text-sm text-stone-600">{{ order.shippingAddress?.city || '' }}, {{ order.shippingAddress?.postalCode || '' }}</p>
@@ -101,13 +101,13 @@ async function updateStatus(status) {
         </div>
 
         <div>
-          <h3 class="text-sm font-semibold text-stone-700 mb-2">Metode Pembayaran</h3>
+          <h3 class="text-sm font-semibold text-stone-700 mb-2">Payment Method</h3>
           <p class="text-sm text-stone-600 capitalize">{{ (order.paymentMethod || 'N/A').replace('_', ' ') }}</p>
         </div>
       </div>
 
       <div class="bg-white rounded-xl border border-stone-200 overflow-hidden mb-6">
-        <div class="px-6 py-4 border-b border-stone-100 font-semibold text-stone-900">Item</div>
+        <div class="px-6 py-4 border-b border-stone-100 font-semibold text-stone-900">Items</div>
         <div class="divide-y divide-stone-100">
           <div v-for="item in order.items" :key="item.productId" class="flex items-center gap-4 px-6 py-4">
             <img :src="item.image" :alt="item.name" class="w-14 h-14 rounded-lg object-cover bg-stone-100 flex-shrink-0" />
@@ -122,18 +122,18 @@ async function updateStatus(status) {
       </div>
 
       <div class="bg-white rounded-xl border border-stone-200 p-6 mb-6">
-        <h3 class="text-sm font-semibold text-stone-700 mb-3">Ringkasan Pesanan</h3>
+        <h3 class="text-sm font-semibold text-stone-700 mb-3">Order Summary</h3>
         <div class="space-y-2 text-sm">
           <div class="flex justify-between text-stone-600"><span>Subtotal</span><span class="font-medium">Rp{{ (order.subtotal || 0).toLocaleString('id-ID') }}</span></div>
-          <div class="flex justify-between text-stone-600"><span>Pengiriman</span><span class="font-medium">Rp{{ (order.shipping || 0).toLocaleString('id-ID') }}</span></div>
-          <div v-if="order.discount" class="flex justify-between text-emerald-600"><span>Diskon</span><span class="font-medium">-Rp{{ order.discount.toLocaleString('id-ID') }}</span></div>
+          <div class="flex justify-between text-stone-600"><span>Shipping</span><span class="font-medium">Rp{{ (order.shipping || 0).toLocaleString('id-ID') }}</span></div>
+          <div v-if="order.discount" class="flex justify-between text-emerald-600"><span>Discount</span><span class="font-medium">-Rp{{ order.discount.toLocaleString('id-ID') }}</span></div>
           <hr class="border-stone-200" />
           <div class="flex justify-between font-bold text-lg text-stone-900"><span>Total</span><span class="text-brand-800">Rp{{ (order.total || 0).toLocaleString('id-ID') }}</span></div>
         </div>
       </div>
 
       <div v-if="order.statusHistory?.length" class="bg-white rounded-xl border border-stone-200 p-6">
-        <h3 class="text-sm font-semibold text-stone-700 mb-3">Riwayat Status</h3>
+        <h3 class="text-sm font-semibold text-stone-700 mb-3">Status History</h3>
         <div class="space-y-3">
           <div v-for="(h, i) in order.statusHistory" :key="i" class="flex items-start gap-3">
             <div class="w-2.5 h-2.5 mt-1.5 rounded-full flex-shrink-0 ring-2 ring-white" :class="i === order.statusHistory.length - 1 ? 'bg-brand-600' : 'bg-stone-300'" />

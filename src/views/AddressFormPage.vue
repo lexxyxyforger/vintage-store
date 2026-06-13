@@ -77,11 +77,11 @@ async function save() {
       class="inline-flex items-center gap-1.5 text-stone-500 hover:text-brand-600 text-sm font-medium mb-6 transition-colors"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-      Back to Addresses
+      Kembali ke Alamat
     </button>
 
     <h1 class="text-2xl font-bold text-stone-900 mb-8">
-      {{ isEdit ? 'Edit Address' : 'Add New Address' }}
+      {{ isEdit ? 'Edit Alamat' : 'Tambah Alamat Baru' }}
     </h1>
 
     <div v-if="loading" class="space-y-4">
@@ -95,23 +95,23 @@ async function save() {
           v-model="form.label"
           type="text"
           required
-          placeholder="Home, Office, etc."
+          placeholder="Rumah, Kantor, dll."
           class="w-full px-4 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all"
         />
       </div>
       <div>
-        <label class="block text-sm font-medium text-stone-700 mb-1.5">Address *</label>
+        <label class="block text-sm font-medium text-stone-700 mb-1.5">Alamat *</label>
         <textarea
           v-model="form.address"
           required
           rows="2"
-          placeholder="Street, building, etc."
+          placeholder="Jalan, gedung, dll."
           class="w-full px-4 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 resize-none transition-all"
         />
       </div>
       <div class="grid sm:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium text-stone-700 mb-1.5">City *</label>
+          <label class="block text-sm font-medium text-stone-700 mb-1.5">Kota *</label>
           <input
             v-model="form.city"
             type="text"
@@ -120,7 +120,7 @@ async function save() {
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-stone-700 mb-1.5">Postal Code</label>
+          <label class="block text-sm font-medium text-stone-700 mb-1.5">Kode Pos</label>
           <input
             v-model="form.postalCode"
             type="text"
@@ -129,7 +129,7 @@ async function save() {
         </div>
       </div>
       <div>
-        <label class="block text-sm font-medium text-stone-700 mb-1.5">Phone *</label>
+        <label class="block text-sm font-medium text-stone-700 mb-1.5">No. Telepon *</label>
         <input
           v-model="form.phone"
           type="tel"
@@ -144,7 +144,7 @@ async function save() {
           type="checkbox"
           class="w-4 h-4 text-brand-600 border-stone-300 rounded focus:ring-brand-500 accent-brand-600"
         />
-        <span class="text-sm text-stone-700">Set as default address</span>
+        <span class="text-sm text-stone-700">Jadikan alamat utama</span>
       </label>
       <div class="flex items-center gap-3 pt-2">
         <button
@@ -152,14 +152,14 @@ async function save() {
           :disabled="saving"
           class="bg-brand-600 text-white px-8 py-2.5 rounded-xl font-medium hover:bg-brand-700 disabled:opacity-50 transition-colors shadow-sm"
         >
-          {{ saving ? 'Saving...' : isEdit ? 'Update Address' : 'Add Address' }}
+          {{ saving ? 'Menyimpan...' : isEdit ? 'Perbarui Alamat' : 'Tambah Alamat' }}
         </button>
         <button
           type="button"
           @click="router.push({ name: 'addresses' })"
           class="px-8 py-2.5 border border-stone-200 rounded-xl text-stone-700 hover:bg-stone-50 transition-colors"
         >
-          Cancel
+          Batal
         </button>
       </div>
     </form>

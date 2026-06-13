@@ -48,27 +48,27 @@ function goToCheckout() {
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="flex items-center justify-between mb-8">
         <div>
-          <h1 class="text-2xl font-bold text-stone-900">Shopping Cart</h1>
-          <p v-if="store.state.cartItems.length" class="text-sm text-stone-500 mt-1">{{ store.getters.cartCount }} items</p>
+          <h1 class="text-2xl font-bold text-stone-900">Keranjang Belanja</h1>
+          <p v-if="store.state.cartItems.length" class="text-sm text-stone-500 mt-1">{{ store.getters.cartCount }} item</p>
         </div>
         <router-link to="/" class="text-sm text-brand-600 hover:text-brand-700 font-medium transition-colors">
-          &larr; Continue Shopping
+          &larr; Lanjutkan Belanja
         </router-link>
       </div>
 
       <div v-if="store.state.cartLoading" class="text-center py-20 text-stone-400">
         <div class="inline-block w-8 h-8 border-2 border-brand-600 border-t-transparent rounded-full animate-spin mb-4" />
-        <p>Loading cart...</p>
+        <p>Memuat keranjang...</p>
       </div>
 
       <div v-else-if="store.state.cartItems.length === 0" class="text-center py-20 text-stone-400">
         <svg class="w-24 h-24 mx-auto mb-4 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
         </svg>
-        <p class="text-lg font-medium mb-2">Your cart is empty</p>
-        <p class="text-sm mb-6 text-stone-400">Start shopping for vintage items!</p>
+        <p class="text-lg font-medium mb-2">Keranjang Anda kosong</p>
+        <p class="text-sm mb-6 text-stone-400">Mulai berbelanja barang vintage!</p>
         <router-link to="/" class="inline-block bg-brand-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-brand-700 transition-colors shadow-sm">
-          Start Shopping
+          Mulai Berbelanja
         </router-link>
       </div>
 
@@ -97,7 +97,7 @@ function goToCheckout() {
               <button
                 @click="remove(item)"
                 class="text-stone-300 hover:text-red-500 transition-colors p-1.5 hover:bg-red-50 rounded-lg"
-                title="Remove"
+                title="Hapus"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -124,19 +124,19 @@ function goToCheckout() {
 
         <div class="lg:col-span-1">
           <div class="bg-white rounded-xl p-6 border border-stone-200 sticky top-24 space-y-4">
-            <h2 class="font-bold text-stone-900 text-lg">Order Summary</h2>
+            <h2 class="font-bold text-stone-900 text-lg">Ringkasan Pesanan</h2>
 
             <div class="space-y-2 text-sm">
               <div class="flex justify-between text-stone-600">
-                <span>Subtotal ({{ store.getters.cartCount }} items)</span>
+                <span>Subtotal ({{ store.getters.cartCount }} item)</span>
                 <span class="font-medium">Rp{{ store.getters.cartSubtotal.toLocaleString('id-ID') }}</span>
               </div>
               <div class="flex justify-between text-stone-600">
-                <span>Shipping</span>
+                <span>Pengiriman</span>
                 <span class="font-medium">Rp{{ store.getters.cartShipping.toLocaleString('id-ID') }}</span>
               </div>
               <div v-if="promoApplied" class="flex justify-between text-emerald-600">
-                <span>Discount (VINTAGE10)</span>
+                <span>Diskon (VINTAGE10)</span>
                 <span class="font-medium">-Rp{{ Math.round(store.getters.cartSubtotal * 0.1).toLocaleString('id-ID') }}</span>
               </div>
             </div>
@@ -144,7 +144,7 @@ function goToCheckout() {
             <div class="flex gap-2">
               <input
                 v-model="promoCode"
-                placeholder="Promo code"
+                placeholder="Kode promo"
                 :disabled="promoApplied"
                 class="flex-1 px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 disabled:bg-stone-50 transition-all"
               />
@@ -153,7 +153,7 @@ function goToCheckout() {
                 :disabled="promoApplied || !promoCode.trim()"
                 class="px-4 py-2 border border-brand-600 text-brand-600 rounded-lg text-sm font-medium hover:bg-brand-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
-                {{ promoApplied ? 'Applied' : 'Apply' }}
+                {{ promoApplied ? 'Diterapkan' : 'Terapkan' }}
               </button>
             </div>
 
@@ -172,7 +172,7 @@ function goToCheckout() {
               @click="goToCheckout"
               class="w-full bg-brand-600 text-white py-3 rounded-xl font-semibold hover:bg-brand-700 transition-all shadow-lg shadow-brand-600/20"
             >
-              Proceed to Checkout
+              Lanjut ke Pembayaran
             </button>
           </div>
         </div>

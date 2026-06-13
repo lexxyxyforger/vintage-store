@@ -15,18 +15,18 @@ const loading = ref(false)
 function parseFirebaseError(err) {
   const code = err.code || ''
   if (code === 'auth/configuration-not-found') {
-    return 'Firebase Authentication is not enabled. Open Firebase Console > Authentication > Sign-in method and enable Email/Password and Google.'
+    return 'Firebase Authentication tidak diaktifkan. Buka Firebase Console > Authentication > Sign-in method dan aktifkan Email/Password dan Google.'
   }
   if (code === 'auth/email-already-in-use') {
-    return 'This email is already registered. Please sign in.'
+    return 'Email ini sudah terdaftar. Silakan masuk.'
   }
   if (code === 'auth/weak-password') {
-    return 'Password is too weak. Use at least 6 characters.'
+    return 'Kata sandi terlalu lemah. Gunakan setidaknya 6 karakter.'
   }
   if (code === 'auth/invalid-email') {
-    return 'Invalid email format.'
+    return 'Format email tidak valid.'
   }
-  return err.message || 'Something went wrong. Please try again.'
+  return err.message || 'Terjadi kesalahan. Silakan coba lagi.'
 }
 
 async function handleRegister() {
@@ -48,18 +48,18 @@ async function handleRegister() {
     <div class="w-full max-w-md">
       <div class="text-center mb-8">
         <router-link to="/" class="text-3xl font-bold text-brand-900 tracking-tight">Vintage</router-link>
-        <p class="text-stone-500 mt-2 text-sm">Create a new account</p>
+        <p class="text-stone-500 mt-2 text-sm">Buat akun baru</p>
       </div>
 
       <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-8">
         <form @submit.prevent="handleRegister" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-stone-700 mb-1.5">Full Name</label>
+            <label class="block text-sm font-medium text-stone-700 mb-1.5">Nama Lengkap</label>
             <input
               v-model="name"
               type="text"
               required
-              placeholder="Your name"
+              placeholder="Nama Anda"
               class="w-full px-4 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all"
             />
           </div>
@@ -69,18 +69,18 @@ async function handleRegister() {
               v-model="email"
               type="email"
               required
-              placeholder="you@email.com"
+              placeholder="anda@email.com"
               class="w-full px-4 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-stone-700 mb-1.5">Password</label>
+            <label class="block text-sm font-medium text-stone-700 mb-1.5">Kata Sandi</label>
             <input
               v-model="password"
               type="password"
               required
               minlength="6"
-              placeholder="Min. 6 characters"
+              placeholder="Min. 6 karakter"
               class="w-full px-4 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all"
             />
           </div>
@@ -99,14 +99,14 @@ async function handleRegister() {
             class="w-full bg-brand-600 text-white py-2.5 rounded-xl font-semibold hover:bg-brand-700 disabled:opacity-50 transition-all shadow-sm flex items-center justify-center gap-2"
           >
             <svg v-if="loading" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-            {{ loading ? 'Creating account...' : 'Sign Up' }}
+            {{ loading ? 'Mendaftar...' : 'Daftar' }}
           </button>
         </form>
 
         <div class="mt-6 text-center">
-          <span class="text-stone-500 text-sm">Already have an account? </span>
+          <span class="text-stone-500 text-sm">Sudah punya akun? </span>
           <router-link to="/login" class="text-brand-600 text-sm font-semibold hover:text-brand-700 transition-colors">
-            Sign in
+            Masuk
           </router-link>
         </div>
       </div>

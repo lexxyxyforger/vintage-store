@@ -28,7 +28,7 @@ const statusColors = {
 
 <template>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <h1 class="text-2xl font-bold text-stone-900 mb-6">My Orders</h1>
+    <h1 class="text-2xl font-bold text-stone-900 mb-6">Pesanan Saya</h1>
 
     <div v-if="loading" class="space-y-3">
       <div v-for="i in 4" :key="i" class="h-24 bg-stone-100 rounded-xl animate-pulse" />
@@ -38,10 +38,10 @@ const statusColors = {
       <svg class="w-20 h-20 mx-auto mb-4 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
       </svg>
-      <p class="text-lg font-medium mb-2">No orders yet</p>
-      <p class="text-sm mb-6">Start shopping to see your orders here.</p>
+      <p class="text-lg font-medium mb-2">Belum ada pesanan</p>
+      <p class="text-sm mb-6">Mulai berbelanja untuk melihat pesanan Anda.</p>
       <router-link to="/" class="inline-block bg-brand-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-brand-700 transition-colors shadow-sm">
-        Start Shopping
+        Mulai Berbelanja
       </router-link>
     </div>
 
@@ -72,7 +72,7 @@ const statusColors = {
           <span v-if="order.items?.length > 4" class="text-xs text-stone-400 bg-stone-100 px-2 py-1 rounded-full flex-shrink-0">+{{ order.items.length - 4 }}</span>
         </div>
         <div class="flex justify-between items-center mt-3 pt-3 border-t border-stone-100">
-          <span class="text-sm text-stone-500">{{ order.items?.length || 0 }} items</span>
+          <span class="text-sm text-stone-500">{{ order.items?.length || 0 }} item</span>
           <span class="font-bold text-stone-900">Rp{{ (order.total || 0).toLocaleString('id-ID') }}</span>
         </div>
       </div>

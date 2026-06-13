@@ -138,13 +138,13 @@ async function addToCart() {
         </div>
       </div>
     </div>
-    <p v-else class="text-stone-400">Product not found</p>
+    <p v-else class="text-stone-400">Produk tidak ditemukan</p>
   </div>
 
   <div v-else class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <router-link to="/" class="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-700 text-sm font-medium mb-6 transition-colors">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-      Back to Shop
+      Kembali ke Katalog
     </router-link>
 
     <div class="grid md:grid-cols-2 gap-10 lg:gap-14">
@@ -178,14 +178,14 @@ async function addToCart() {
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
           </div>
-          <span class="text-sm text-stone-500">({{ reviews.length }} reviews)</span>
+          <span class="text-sm text-stone-500">({{ reviews.length }} ulasan)</span>
         </div>
 
         <div class="flex items-baseline gap-3 mb-6">
           <p class="text-3xl font-bold text-brand-800">
             Rp{{ Number(product.price).toLocaleString('id-ID') }}
           </p>
-          <span class="text-sm text-stone-400">+ Shipping Rp{{ Number(product.shipping || 0).toLocaleString('id-ID') }}</span>
+          <span class="text-sm text-stone-400">+ Ongkir Rp{{ Number(product.shipping || 0).toLocaleString('id-ID') }}</span>
         </div>
 
         <div v-if="product.stock !== undefined" class="mb-4">
@@ -193,7 +193,7 @@ async function addToCart() {
             class="text-xs font-semibold px-3 py-1.5 rounded-full"
             :class="product.stock > 10 ? 'bg-emerald-100 text-emerald-700' : product.stock > 0 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'"
           >
-            {{ product.stock > 0 ? `${product.stock} in stock` : 'Out of stock' }}
+            {{ product.stock > 0 ? `${product.stock} tersedia` : 'Stok Habis' }}
           </span>
         </div>
 
@@ -202,7 +202,7 @@ async function addToCart() {
         </div>
 
         <div v-if="colors.length" class="mb-6">
-          <label class="block text-sm font-semibold text-stone-700 mb-3">Color</label>
+          <label class="block text-sm font-semibold text-stone-700 mb-3">Warna</label>
           <div class="flex flex-wrap gap-2">
             <button
               v-for="c in colors"
@@ -217,7 +217,7 @@ async function addToCart() {
         </div>
 
         <div v-if="sizes.length" class="mb-6">
-          <label class="block text-sm font-semibold text-stone-700 mb-3">Size</label>
+          <label class="block text-sm font-semibold text-stone-700 mb-3">Ukuran</label>
           <div class="flex flex-wrap gap-2">
             <button
               v-for="s in sizes"
@@ -232,7 +232,7 @@ async function addToCart() {
         </div>
 
         <div class="mb-8">
-          <label class="block text-sm font-semibold text-stone-700 mb-3">Quantity</label>
+          <label class="block text-sm font-semibold text-stone-700 mb-3">Jumlah</label>
           <div class="flex items-center gap-3">
             <button
               @click="quantity = Math.max(1, quantity - 1)"
@@ -259,14 +259,14 @@ async function addToCart() {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
           </svg>
           <svg v-if="adding" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-          {{ product.stock === 0 ? 'Out of Stock' : adding ? 'Adding...' : 'Add to Cart' }}
+          {{ product.stock === 0 ? 'Stok Habis' : adding ? 'Menambahkan...' : 'Tambah ke Keranjang' }}
         </button>
       </div>
     </div>
 
     <section class="mt-16">
       <h2 class="text-xl font-bold text-stone-900 mb-6 flex items-center gap-2">
-        Reviews
+        Ulasan
         <span class="text-sm font-normal text-stone-500">({{ reviews.length }})</span>
         <span v-if="averageRating > 0" class="text-base font-normal text-stone-500 ml-1">
           &middot; {{ averageRating }} / 5
@@ -274,7 +274,7 @@ async function addToCart() {
       </h2>
 
       <div v-if="store.getters.isLoggedIn" class="bg-white rounded-xl border border-stone-200 p-6 mb-8">
-        <h3 class="font-semibold text-stone-900 mb-4">Write a Review</h3>
+        <h3 class="font-semibold text-stone-900 mb-4">Tulis Ulasan</h3>
         <form @submit.prevent="submitReview" class="space-y-4">
           <div class="flex items-center gap-1">
             <span class="text-sm text-stone-600 mr-2">Rating:</span>
@@ -294,7 +294,7 @@ async function addToCart() {
             v-model="reviewForm.comment"
             rows="3"
             required
-            placeholder="Share your thoughts about this product..."
+            placeholder="Bagikan pendapat Anda tentang produk ini..."
             class="w-full px-4 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 resize-none transition-all"
           />
           <button
@@ -302,7 +302,7 @@ async function addToCart() {
             :disabled="submittingReview"
             class="bg-brand-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-brand-700 disabled:opacity-50 transition-colors"
           >
-            {{ submittingReview ? 'Submitting...' : 'Submit Review' }}
+            {{ submittingReview ? 'Mengirim...' : 'Kirim Ulasan' }}
           </button>
         </form>
       </div>
@@ -311,7 +311,7 @@ async function addToCart() {
         <div v-for="i in 3" :key="i" class="h-20 bg-stone-100 rounded-xl animate-pulse" />
       </div>
       <div v-else-if="reviews.length === 0" class="text-center py-10 text-stone-400">
-        <p>No reviews yet. Be the first to review!</p>
+        <p>Belum ada ulasan. Jadilah yang pertama memberi ulasan!</p>
       </div>
       <div v-else class="space-y-4">
         <div
@@ -327,7 +327,7 @@ async function addToCart() {
             />
             <div class="flex-1">
               <div class="flex items-center justify-between">
-                <p class="font-semibold text-stone-900 text-sm">{{ review.userName || 'Anonymous' }}</p>
+                <p class="font-semibold text-stone-900 text-sm">{{ review.userName || 'Anonim' }}</p>
                 <span class="text-xs text-stone-400">{{ review.createdAt?.toDate().toLocaleDateString('en-US') }}</span>
               </div>
               <div class="flex items-center gap-0.5 mt-0.5">
@@ -343,7 +343,7 @@ async function addToCart() {
     </section>
 
     <section v-if="relatedProducts.length" class="mt-16 mb-10">
-      <h2 class="text-xl font-bold text-stone-900 mb-6">Related Products</h2>
+      <h2 class="text-xl font-bold text-stone-900 mb-6">Produk Terkait</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         <div v-for="rp in relatedProducts" :key="rp.id">
           <ProductCard :product="rp" />

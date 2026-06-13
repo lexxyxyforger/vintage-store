@@ -1,15 +1,18 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 import { db } from '@/firebase'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 
 const route = useRoute()
 const router = useRouter()
+const store = useStore()
 const order = ref(null)
 const loading = ref(true)
 
 const statuses = ['Processed', 'Shipped', 'Delivered', 'Cancelled']
+const statusLabels = { Processed: 'Diproses', Shipped: 'Dikirim', Delivered: 'Terkirim', Cancelled: 'Dibatalkan' }
 
 const statusColors = {
   Processed: 'bg-amber-100 text-amber-700',
@@ -18,16 +21,25 @@ const statusColors = {
   Cancelled: 'bg-red-100 text-red-700',
 }
 
+const myItems = computed(() => {
+  if (!order.value?.items) return []
+  const myProductIds = store.state.products
+    .filter((p) => p.sellerId === store.getters.userId)
+    .map((p) => p.id)
+  return order.value.items.filter((item) => myProductIds.includes(item.productId))
+})
+
 onMounted(async () => {
   try {
+    await store.dispatch('fetchProducts')
     const d = await getDoc(doc(db, 'transactions', route.params.id))
     if (!d.exists()) {
-      router.push({ name: 'admin-orders' })
+      router.push({ name: 'seller-orders' })
       return
     }
     order.value = { id: d.id, ...d.data() }
   } catch {
-    router.push({ name: 'admin-orders' })
+    router.push({ name: 'seller-orders' })
   } finally {
     loading.value = false
   }
@@ -46,7 +58,7 @@ async function updateStatus(status) {
 <template>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <button
-      @click="router.push({ name: 'admin-orders' })"
+      @click="router.push({ name: 'seller-orders' })"
       class="inline-flex items-center gap-1.5 text-stone-500 hover:text-brand-600 text-sm font-medium mb-6 transition-colors"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
@@ -61,11 +73,11 @@ async function updateStatus(status) {
       <div class="bg-white rounded-xl border border-stone-200 p-6 mb-6">
         <div class="flex items-start justify-between mb-4">
           <div>
-            <h1 class="text-xl font-bold text-stone-900">Order #{{ order.id.slice(-8) }}</h1>
+            <h1 class="text-xl font-bold text-stone-900">Pesanan #{{ order.id.slice(-8) }}</h1>
             <p class="text-sm text-stone-500">{{ order.createdAt?.toDate().toLocaleString('en-US') }}</p>
           </div>
           <span class="text-xs font-semibold px-3 py-1.5 rounded-full" :class="statusColors[order.status] || 'bg-stone-100 text-stone-700'">
-            {{ order.status }}
+            {{ statusLabels[order.status] || order.status }}
           </span>
         </div>
 
@@ -80,7 +92,7 @@ async function updateStatus(status) {
               class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               :class="s === order.status ? 'bg-stone-200 text-stone-500 cursor-not-allowed' : 'bg-brand-50 text-brand-700 hover:bg-brand-100'"
             >
-              {{ s }}
+              {{ statusLabels[s] }}
             </button>
           </div>
         </div>
@@ -107,9 +119,12 @@ async function updateStatus(status) {
       </div>
 
       <div class="bg-white rounded-xl border border-stone-200 overflow-hidden mb-6">
-        <div class="px-6 py-4 border-b border-stone-100 font-semibold text-stone-900">Item</div>
-        <div class="divide-y divide-stone-100">
-          <div v-for="item in order.items" :key="item.productId" class="flex items-center gap-4 px-6 py-4">
+        <div class="px-6 py-4 border-b border-stone-100 font-semibold text-stone-900">Barang Saya di Pesanan Ini</div>
+        <div v-if="myItems.length === 0" class="p-6 text-center text-stone-400">
+          Tidak ada barang dari toko Anda di pesanan ini.
+        </div>
+        <div v-else class="divide-y divide-stone-100">
+          <div v-for="item in myItems" :key="item.productId" class="flex items-center gap-4 px-6 py-4">
             <img :src="item.image" :alt="item.name" class="w-14 h-14 rounded-lg object-cover bg-stone-100 flex-shrink-0" />
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium text-stone-900 truncate">{{ item.name }}</p>
@@ -138,7 +153,7 @@ async function updateStatus(status) {
           <div v-for="(h, i) in order.statusHistory" :key="i" class="flex items-start gap-3">
             <div class="w-2.5 h-2.5 mt-1.5 rounded-full flex-shrink-0 ring-2 ring-white" :class="i === order.statusHistory.length - 1 ? 'bg-brand-600' : 'bg-stone-300'" />
             <div>
-              <p class="text-sm font-medium text-stone-900">{{ h.status }}</p>
+              <p class="text-sm font-medium text-stone-900">{{ statusLabels[h.status] || h.status }}</p>
               <p class="text-xs text-stone-400">{{ new Date(h.timestamp).toLocaleString('en-US') }}</p>
             </div>
           </div>

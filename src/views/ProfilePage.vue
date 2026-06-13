@@ -44,14 +44,14 @@ const statusColors = {
           class="w-16 h-16 rounded-full object-cover ring-2 ring-stone-200"
         />
         <div class="flex-1">
-          <h1 class="text-xl font-bold text-stone-900">{{ store.getters.userName || 'User' }}</h1>
+          <h1 class="text-xl font-bold text-stone-900">{{ store.getters.userName || 'Pengguna' }}</h1>
           <p class="text-stone-500">{{ store.getters.userEmail }}</p>
         </div>
         <router-link
           :to="{ name: 'profile-edit' }"
           class="text-sm text-brand-600 hover:text-brand-700 font-medium transition-colors"
         >
-          Edit Profile
+          Edit Profil
         </router-link>
       </div>
     </div>
@@ -64,7 +64,7 @@ const statusColors = {
         <svg class="w-7 h-7 mx-auto mb-2 text-brand-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
         </svg>
-        <p class="text-sm font-semibold text-stone-900">My Orders</p>
+        <p class="text-sm font-semibold text-stone-900">Pesanan Saya</p>
       </router-link>
       <router-link
         :to="{ name: 'addresses' }"
@@ -74,7 +74,7 @@ const statusColors = {
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
-        <p class="text-sm font-semibold text-stone-900">Addresses</p>
+        <p class="text-sm font-semibold text-stone-900">Alamat Saya</p>
       </router-link>
       <router-link
         :to="{ name: 'wishlist' }"
@@ -83,11 +83,11 @@ const statusColors = {
         <svg class="w-7 h-7 mx-auto mb-2 text-brand-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
         </svg>
-        <p class="text-sm font-semibold text-stone-900">Wishlist</p>
+        <p class="text-sm font-semibold text-stone-900">Favorit</p>
       </router-link>
     </div>
 
-    <h2 class="text-xl font-bold text-stone-900 mb-4">Transaction History</h2>
+    <h2 class="text-xl font-bold text-stone-900 mb-4">Riwayat Transaksi</h2>
 
     <div v-if="loadingTx" class="space-y-3">
       <div v-for="i in 3" :key="i" class="h-20 bg-stone-100 rounded-xl animate-pulse" />
@@ -97,8 +97,8 @@ const statusColors = {
       <svg class="w-16 h-16 mx-auto mb-4 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
       </svg>
-      <p class="text-lg font-medium mb-1">No transactions yet.</p>
-      <p class="text-sm">Start shopping to see your order history.</p>
+      <p class="text-lg font-medium mb-1">Belum ada transaksi.</p>
+      <p class="text-sm">Mulai berbelanja untuk melihat riwayat pesanan.</p>
     </div>
 
     <div v-else class="space-y-4">
@@ -121,7 +121,7 @@ const statusColors = {
           </span>
         </div>
         <div class="flex justify-between items-center">
-          <p class="text-sm text-stone-600">{{ tx.items?.length || 0 }} items</p>
+          <p class="text-sm text-stone-600">{{ tx.items?.length || 0 }} item</p>
           <p class="font-bold text-stone-900">Rp{{ (tx.total || 0).toLocaleString('id-ID') }}</p>
         </div>
       </div>

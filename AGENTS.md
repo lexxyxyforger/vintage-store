@@ -21,12 +21,13 @@ Firestore composite indexes defined in `firestore.indexes.json`.
 | `npm run format` | Prettier (`--experimental-cli`) on `src/` only |
 
 `npm run lint` chains `lint:oxlint` → `lint:eslint` via `npm-run-all2`. Always run the full command.
+Role: `npm run bootstrap:superadmin <email> [role]` — needs service account key at project root.
 
 ## Testing
 
-- **No tests exist yet** — `src/**/__tests__/*` and `e2e/` are both empty.
-- Unit (Vitest): jsdom + `@vue/test-utils`. Run single file: `npx vitest <path>`.
-- E2E (Playwright): first run `npx playwright install`. `webServer` auto-starts dev/preview. CI: `npm run build && npm run test:e2e`. Default project: chromium (use `--project=chromium`, `--debug` for inspector).
+- No tests exist yet — `src/**/__tests__/*` and `e2e/` are both empty.
+- Unit: Vitest + jsdom + `@vue/test-utils`. Single file: `npx vitest <path>`.
+- E2E: Playwright auto-starts dev/preview via `webServer`. CI: `npm run build && npm run test:e2e`. Default project chromium. Use `--project=chromium --debug` for inspector.
 
 ## Linting & formatting
 
@@ -37,22 +38,23 @@ Firestore composite indexes defined in `firestore.indexes.json`.
 
 ## Architecture
 
-- **Vuex store** at `src/store/index.js` (uses `createStore` from `vuex` — **not** Pinia). Firebase creds are hardcoded in `src/firebase.js` (no `.env`).
-- **Firestore collections**: `products`, `categories`, `carts` (docId `${userId}_${productId}`), `wishlists`, `addresses`, `reviews`, `transactions`
-- **Auth**: Firebase Auth (email/password + Google). Guarded routes use `meta: { requiresAuth: true }` in router `beforeEach`.
-- **Admin**: only user `yolo@gmail.com` (checked via `store.getters.isAdmin`). Must register via the app first. Admin routes use `meta: { requiresAdmin: true }`.
-- **Routes** all lazy-loaded. Admin at `/admin/*`. `/admin/seed` is a dev tool to seed 16 sample products.
+- **Vuex store** at `src/store/index.js` — `createStore` from `vuex`, not Pinia.
+- **Firebase creds** hardcoded in `src/firebase.js` — no `.env` files.
+- **`fetchProducts` is cached** — reads Firestore once per session; call `refreshProducts` to force re-fetch.
+- **Auth**: Firebase Auth (email/password + Google). Router `beforeEach` waits for `authLoading` to resolve before enforcing `requiresAuth`.
+- **Roles**: `superadmin`, `seller`, `user` — Firebase Auth custom claims, not Firestore. Default `user`. Set via `npm run bootstrap:superadmin` (Admin SDK, needs service account key at project root — gitignored).
+- **Route guards**: `meta: { requiresAuth: true }`, `requiresSuperadmin`, `requiresSeller` in router `beforeEach`.
+- **Routes** all lazy-loaded. Superadmin at `/superadmin/*`, Seller at `/seller/*`, User at `/profile/*`.
 - **SPA**: Firebase Hosting rewrites all routes to `/index.html`.
-- **Promo code**: `VINTAGE10` = 10% off.
-- **Order status workflow**: Processed → Shipped → Delivered (or Cancelled). Tracked in `statusHistory[]`.
+- **Promo code**: `VINTAGE10` = 10% off (logic in `CartPage.vue`).
+- **Order status**: Processed → Shipped → Delivered (or Cancelled). Tracked in `statusHistory[]`.
 - **Pagination**: 12 products per page on catalog.
-- **Page transitions**: `App.vue` uses `<Transition>` with fade + translateY (`.page-enter-from`, `.page-leave-to`).
-- **Toast composable**: `useToast.js` listed in README but `src/composables/` is currently empty.
 
 ## Conventions
 
 - Multi-word component names (`AppNavbar`, `ModalLogout`, `ProductCard`)
 - Sort order: `<script setup>` → `<template>` → `<style>`
 - UI strings are English (despite `index.html` having `lang="id"`)
-- Color palette: `#009696` (primary), `#013243` (dark teal) — custom theme vars in `main.css` under `--color-brand-*` and `--color-dark-*`
+- Color palette: `#009696` (primary), `#013243` (dark teal) — custom theme vars in `main.css` (`--color-brand-*`, `--color-dark-*`)
 - Node `^20.19.0 || >=22.12.0`
+- Service account key (`*-firebase-adminsdk-*.json`) gitignored — must be copied to project root for `bootstrap:superadmin`

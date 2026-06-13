@@ -82,54 +82,115 @@ const routes = [
     component: () => import('@/views/WishlistPage.vue'),
     meta: { requiresAuth: true },
   },
+
+  // --- Seller routes ---
   {
-    path: '/admin/seed',
-    name: 'admin-seed',
+    path: '/seller/seed',
+    name: 'seller-seed',
     component: () => import('@/views/AdminSeed.vue'),
-    meta: { requiresAuth: true, requiresAdmin: true },
+    meta: { requiresAuth: true, requiresSeller: true },
   },
   {
+    path: '/seller',
+    name: 'seller-dashboard',
+    component: () => import('@/views/seller/DashboardPage.vue'),
+    meta: { requiresAuth: true, requiresSeller: true },
+  },
+  {
+    path: '/seller/products',
+    name: 'seller-products',
+    component: () => import('@/views/seller/ProductsPage.vue'),
+    meta: { requiresAuth: true, requiresSeller: true },
+  },
+  {
+    path: '/seller/products/create',
+    name: 'seller-products-create',
+    component: () => import('@/views/seller/ProductFormPage.vue'),
+    meta: { requiresAuth: true, requiresSeller: true },
+  },
+  {
+    path: '/seller/products/:id/edit',
+    name: 'seller-products-edit',
+    component: () => import('@/views/seller/ProductFormPage.vue'),
+    meta: { requiresAuth: true, requiresSeller: true },
+  },
+  {
+    path: '/seller/orders',
+    name: 'seller-orders',
+    component: () => import('@/views/seller/OrdersPage.vue'),
+    meta: { requiresAuth: true, requiresSeller: true },
+  },
+  {
+    path: '/seller/orders/:id',
+    name: 'seller-order-detail',
+    component: () => import('@/views/seller/OrderDetailPage.vue'),
+    meta: { requiresAuth: true, requiresSeller: true },
+  },
+
+  // --- Superadmin routes ---
+  {
+    path: '/superadmin/seed',
+    name: 'superadmin-seed',
+    component: () => import('@/views/AdminSeed.vue'),
+    meta: { requiresAuth: true, requiresSuperadmin: true },
+  },
+  {
+    path: '/superadmin',
+    name: 'superadmin-dashboard',
+    component: () => import('@/views/superadmin/DashboardPage.vue'),
+    meta: { requiresAuth: true, requiresSuperadmin: true },
+  },
+  {
+    path: '/superadmin/sellers',
+    name: 'superadmin-sellers',
+    component: () => import('@/views/superadmin/SellersPage.vue'),
+    meta: { requiresAuth: true, requiresSuperadmin: true },
+  },
+  {
+    path: '/superadmin/users',
+    name: 'superadmin-users',
+    component: () => import('@/views/superadmin/UsersPage.vue'),
+    meta: { requiresAuth: true, requiresSuperadmin: true },
+  },
+  {
+    path: '/superadmin/products',
+    name: 'superadmin-products',
+    component: () => import('@/views/superadmin/ProductsPage.vue'),
+    meta: { requiresAuth: true, requiresSuperadmin: true },
+  },
+  {
+    path: '/superadmin/categories',
+    name: 'superadmin-categories',
+    component: () => import('@/views/superadmin/CategoriesPage.vue'),
+    meta: { requiresAuth: true, requiresSuperadmin: true },
+  },
+  {
+    path: '/superadmin/orders',
+    name: 'superadmin-orders',
+    component: () => import('@/views/superadmin/OrdersPage.vue'),
+    meta: { requiresAuth: true, requiresSuperadmin: true },
+  },
+  {
+    path: '/superadmin/orders/:id',
+    name: 'superadmin-order-detail',
+    component: () => import('@/views/superadmin/OrderDetailPage.vue'),
+    meta: { requiresAuth: true, requiresSuperadmin: true },
+  },
+
+  // --- Legacy admin redirects (kept for backward compat) ---
+  {
     path: '/admin',
-    name: 'admin-dashboard',
-    component: () => import('@/views/admin/DashboardPage.vue'),
-    meta: { requiresAuth: true, requiresAdmin: true },
+    redirect: { name: 'superadmin-dashboard' },
   },
   {
     path: '/admin/products',
-    name: 'admin-products',
-    component: () => import('@/views/admin/ProductsPage.vue'),
-    meta: { requiresAuth: true, requiresAdmin: true },
-  },
-  {
-    path: '/admin/products/create',
-    name: 'admin-products-create',
-    component: () => import('@/views/admin/ProductFormPage.vue'),
-    meta: { requiresAuth: true, requiresAdmin: true },
-  },
-  {
-    path: '/admin/products/:id/edit',
-    name: 'admin-products-edit',
-    component: () => import('@/views/admin/ProductFormPage.vue'),
-    meta: { requiresAuth: true, requiresAdmin: true },
-  },
-  {
-    path: '/admin/categories',
-    name: 'admin-categories',
-    component: () => import('@/views/admin/CategoriesPage.vue'),
-    meta: { requiresAuth: true, requiresAdmin: true },
+    redirect: { name: 'superadmin-products' },
   },
   {
     path: '/admin/orders',
-    name: 'admin-orders',
-    component: () => import('@/views/admin/OrdersPage.vue'),
-    meta: { requiresAuth: true, requiresAdmin: true },
+    redirect: { name: 'superadmin-orders' },
   },
-  {
-    path: '/admin/orders/:id',
-    name: 'admin-order-detail',
-    component: () => import('@/views/admin/OrderDetailPage.vue'),
-    meta: { requiresAuth: true, requiresAdmin: true },
-  },
+
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
@@ -164,7 +225,11 @@ router.beforeEach(async (to) => {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
 
-  if (to.meta.requiresAdmin && !store.getters.isAdmin) {
+  if (to.meta.requiresSuperadmin && !store.getters.isSuperadmin) {
+    return { name: 'home' }
+  }
+
+  if (to.meta.requiresSeller && !store.getters.isSeller) {
     return { name: 'home' }
   }
 })
