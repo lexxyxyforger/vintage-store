@@ -162,6 +162,7 @@ tugas-akhir-ta/
 ├── .oxlintrc.json               # oxlint config
 ├── .prettierrc.json             # Prettier: no semi, single quotes, 100 printWidth
 ├── .editorconfig                # EditorConfig (2 spaces, UTF-8, LF)
+├── .gitignore                   # node_modules/, dist/, .env, *.local, *-firebase-adminsdk-*.json
 ├── jsconfig.json                # Path alias @/ → ./src/
 ├── package.json                 # Dependencies & scripts
 ├── AGENTS.md                    # Instruksi untuk OpenCode AI
@@ -239,6 +240,8 @@ npm run build
 firebase deploy --only hosting
 ```
 
+Aplikasi langsung terdeploy di **https://fe-vue-js-feyy.web.app**.
+
 ### 7. Role-Based Access
 
 Aplikasi memiliki **3 level akses** berdasarkan **Firebase Auth custom claims** (field `role` di token):
@@ -265,7 +268,7 @@ Aplikasi memiliki **3 level akses** berdasarkan **Firebase Auth custom claims** 
 
 | Topik | Detail |
 |---|---|
-| **Bahasa UI** | English (meskipun `<html lang="id">`) |
+| **Bahasa UI** | Indonesia |
 | **Konvensi komponen** | Multi-word names (`AppNavbar`, `ProductCard`) |
 | **Urutan file** | `<script setup>` → `<template>` → `<style>` |
 | **Color palette** | `#009696` (primary teal), `#013243` (dark slate) — custom CSS vars `--color-brand-*` dan `--color-dark-*` |
