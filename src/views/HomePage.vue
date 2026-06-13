@@ -3,7 +3,6 @@ import { onMounted, ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import ProductCard from '@/components/ProductCard.vue'
-import ProductCardSkeleton from '@/components/ProductCardSkeleton.vue'
 
 const route = useRoute()
 const store = useStore()
@@ -116,7 +115,7 @@ onMounted(() => {
     </section>
 
     <section
-      v-if="!store.state.productsLoading && store.state.products.length > 0"
+      v-if="store.state.products.length > 0"
       class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10"
     >
       <div class="flex items-center justify-between mb-5">
@@ -156,7 +155,7 @@ onMounted(() => {
           <h2 class="text-xl font-bold text-stone-900">
             {{ activeTab === 'all' ? 'All Products' : activeTab }}
           </h2>
-          <p v-if="!store.state.productsLoading" class="text-sm text-stone-500 bg-stone-100 px-3 py-1 rounded-full">
+          <p v-if="store.state.productsLoaded" class="text-sm text-stone-500 bg-stone-100 px-3 py-1 rounded-full">
             {{ sortedProducts.length }} products
           </p>
         </div>
@@ -174,27 +173,20 @@ onMounted(() => {
       </div>
 
       <div
-        v-if="store.state.productsLoading"
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
-      >
-        <ProductCardSkeleton :count="8" />
-      </div>
-
-      <div v-else-if="sortedProducts.length === 0" class="text-center py-20 text-stone-400">
-        <svg class="w-20 h-20 mx-auto mb-4 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-        </svg>
-        <p class="text-lg font-medium mb-1">No products found</p>
-        <p class="text-sm">Try changing the filter or search keywords.</p>
-      </div>
-
-      <div
-        v-else
+        v-if="sortedProducts.length > 0"
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
       >
         <div v-for="product in paginatedProducts" :key="product.id" class="animate-fade-in-up">
           <ProductCard :product="product" />
         </div>
+      </div>
+
+      <div v-else-if="store.state.productsLoaded" class="text-center py-20 text-stone-400">
+        <svg class="w-20 h-20 mx-auto mb-4 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+        </svg>
+        <p class="text-lg font-medium mb-1">No products found</p>
+        <p class="text-sm">Try changing the filter or search keywords.</p>
       </div>
 
       <div v-if="totalPages > 1" class="flex justify-center items-center gap-3 mt-10">
