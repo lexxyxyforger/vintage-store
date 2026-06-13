@@ -1,191 +1,251 @@
-# Vintage — E-Commerce App
+# 🛍️ Vintage — Thrift Fashion E-Commerce
 
-Single-page vintage fashion e-commerce built with Vue 3, Firebase, and Tailwind CSS.
+**Single-page aplikasi e-commerce fashion vintage** yang dibangun dengan Vue 3, Firebase, dan Tailwind CSS. Cepat, real-time, dan siap produksi.
 
-## Tech Stack
+---
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Vue 3 (Composition API, `<script setup>`) |
-| State | Vuex 4 |
-| Router | Vue Router 5 |
-| Styling | Tailwind CSS v4 (`@tailwindcss/vite`) |
-| Backend | Firebase Auth + Firestore + Hosting |
-| Linting | oxlint + ESLint (flat config) |
-| Formatting | Prettier |
-| Testing | Vitest (unit), Playwright (e2e) |
+## Visi & Misi
 
-## Features
+**Visi** — Menjembatani pecinta fashion vintage dengan platform belanja digital yang cepat, intuitif, dan bisa diakses siapa saja tanpa ribet.
 
-### Public
-- Product catalog with image previews, category filter, sort (price/name/newest), pagination (12/page)
-- Search by keyword
-- Product detail page with color/size selection, stock badge, quantity picker
-- Product reviews & ratings (star rating + comments, average display)
-- Related products (same category)
+**Misi**
+- Menyediakan **pengalaman belanja mulus** dengan navigasi real-time tanpa reload halaman.
+- Memberdayakan admin dengan **dashboard manajemen produk, kategori, dan pesanan** yang lengkap.
+- Mendukung **skalabilitas pemula** dengan infrastruktur serverless Firebase — siap naik kelas kapan pun.
+- Menjaga **kode tetap bersih dan terawat** dengan toolchain modern (oxlint, ESLint, Prettier, Playwright).
 
-### Auth
-- Email/password registration & login
-- Google OAuth sign-in
-- Firebase Auth persistence (session restored on refresh)
-- Route guards (`requiresAuth`, `requiresAdmin`) with redirect back
+---
 
-### User
-- Profile management (edit display name, photo URL, change password)
-- Address book (CRUD, set default, used at checkout)
-- Shopping cart (add/remove/update quantity, stock validation)
-- Wishlist (add/remove from product card or detail page)
-- Multi-step checkout flow:
-  1. Select shipping address (from saved addresses)
-  2. Choose payment method (Bank Transfer, GoPay, COD)
-  3. Review order, apply promo code (`VINTAGE10` = 10% off), place order
-- Order history with detail page and status timeline
+## Fitur Utama
 
-### Admin (`yolo@gmail.com`)
-- Dashboard with stats (products, categories, wishlists, transactions)
-- Product CRUD (with stock field, image preview)
-- Category CRUD
-- Order management (list, filter by status, update status workflow: Processed → Shipped → Delivered / Cancelled)
-- Seed tool (`/admin/seed`) to populate 16 sample products
+### 👤 Publik
+- **Katalog produk** dengan tampilan grid responsif (1–4 kolom), filter kategori, dan urutan (nama, harga termurah/termahal, terbaru).
+- **Pencarian produk** via navbar atau query parameter `?search=`.
+- **Halaman detail produk** — pemilihan warna/ukuran, quantity picker, badge stok, dan gambar preview dengan shimmer loading.
+- **Rating & review** — bintang interaktif (1–5), komentar, avatar user, dan jumlah rating rata-rata.
+- **Produk terkait** — up to 4 produk dari kategori yang sama.
 
-### Orders
-- Status workflow: `Processed` → `Shipped` → `Delivered` (or `Cancelled`)
-- Status history timeline tracked per order
-- Auto stock deduction on order placement
-- Revenue tracking on admin orders page
+### 🔐 Autentikasi
+- **Email/password** — registrasi dan login.
+- **Google OAuth** — login satu klik.
+- **Session persistence** — status login tersimpan meskipun halaman di-refresh.
+- **Route guards** — proteksi halaman user (`requiresAuth`) dan admin (`requiresAdmin`) dengan redirect otomatis.
 
-## Project Setup
+### 👤 User Area (wajib login)
+- **Manajemen profil** — edit nama, photo URL, dan ganti password (dengan validasi konfirmasi).
+- **Buku alamat** — CRUD alamat pengiriman, set default, digunakan di checkout.
+- **Shopping cart** — tambah/hapus/ubah quantity, validasi stok, dan quantity otomatis terhapus jika 0.
+- **Wishlist** — tambah/hapus dari kartu produk atau halaman detail, redirect ke login jika belum login.
+- **Multi-step checkout** (3 langkah):
+  1. Pilih alamat pengiriman (dari buku alamat)
+  2. Pilih metode pembayaran (Bank Transfer / GoPay / COD)
+  3. Review pesanan + kode promo (`VINTAGE10` = diskon 10%) + Place Order
+- **Riwayat pesanan** — daftar pesanan dengan status color-coded, klik untuk detail.
+- **Detail pesanan** — timeline status, alamat, metode bayar, item, dan ringkasan harga.
+
+### 🛠️ Admin (`yolo@gmail.com`)
+- **Dashboard** — 4 kartu statistik (Total Produk, Kategori, Wishlist, Transaksi) + daftar produk terbaru.
+- **CRUD produk** — form lengkap dengan nama, kategori (dropdown), harga, stok, ongkir, warna/ukuran (comma-separated), URL gambar (live preview), deskripsi.
+- **CRUD kategori** — inline form di halaman yang sama.
+- **Manajemen pesanan** — daftar semua pesanan, filter status, revenue tracker, update status (Processed → Shipped → Delivered / Cancelled).
+- **Seed tool** (`/admin/seed`) — populate 16 sample produk vintage sekaligus.
+
+### 🚚 Alur Pesanan
+| Status | Deskripsi |
+|---|---|
+| `Processed` | Pesanan masuk, stok otomatis dikurangi |
+| `Shipped` | Pesanan dikirim |
+| `Delivered` | Pesanan sampai |
+| `Cancelled` | Pesanan dibatalkan |
+
+Setiap perubahan status tercatat di `statusHistory[]` dengan timestamp.
+
+---
+
+## Teknologi yang Digunakan
+
+### Frontend
+| Teknologi | Versi | Fungsi |
+|---|---|---|
+| **Vue 3** | `^3.5.32` | Framework SPA dengan Composition API & `<script setup>` |
+| **Vue Router 5** | `^5.0.4` | Routing SPA dengan lazy loading + auth guards |
+| **Vuex 4** | `^4.1.0` | State management (auth, cart, produk, kategori, orders, alamat, reviews) |
+| **Tailwind CSS v4** | `^4.3.0` | Utility-first styling via `@tailwindcss/vite` plugin |
+| **Vite 8** | `^8.0.8` | Build tool & dev server super cepat |
+
+### Backend & Infrastructure
+| Teknologi | Fungsi |
+|---|---|
+| **Firebase Auth** | Autentikasi email/password + Google OAuth |
+| **Firestore** | Database NoSQL real-time dengan 7 collections |
+| **Firebase Hosting** | Deploy SPA dengan rewrite semua route ke `/index.html` |
+
+### Toolchain
+| Tool | Fungsi |
+|---|---|
+| **oxlint** | Linter Rust-based (plugins: eslint, unicorn, oxc, vue, vitest) |
+| **ESLint** | Linter JavaScript (flat config, Playwright & Vitest rules) |
+| **Prettier** | Formatter (no semi, single quotes, printWidth 100) |
+| **Vitest** | Unit testing dengan jsdom + `@vue/test-utils` |
+| **Playwright** | E2E testing (Chromium, Firefox, WebKit) |
+| **npm-run-all2** | Menjalankan oxlint + ESLint secara sequential |
+
+---
+
+## Struktur Folder
+
+```
+tugas-akhir-ta/
+├── src/
+│   ├── assets/
+│   │   └── main.css              # Tailwind import + custom theme (brand/dark) + animations
+│   ├── components/
+│   │   ├── AppNavbar.vue         # Navigasi sticky, search, cart badge, wishlist, user dropdown
+│   │   ├── ModalLogout.vue       # Modal konfirmasi logout
+│   │   ├── ProductCard.vue       # Kartu produk dengan wishlist, shimmer, stock badge
+│   │   ├── ProductCardSkeleton.vue # Skeleton loading untuk grid produk
+│   │   └── ToastContainer.vue    # (placeholder) Notifikasi toast
+│   ├── composables/              # (kosong) useToast.js terdaftar tapi belum dibuat
+│   ├── router/
+│   │   └── index.js              # 22 routes, lazy-loaded, auth + admin guards
+│   ├── store/
+│   │   └── index.js              # Vuex store — 11 state, 11 getters, 14 mutations, 26 actions
+│   ├── views/
+│   │   ├── HomePage.vue          # Hero + kategori tabs + grid produk + pagination (12/page)
+│   │   ├── DetailProduct.vue     # Detail produk + reviews + related products
+│   │   ├── LoginPage.vue         # Login email/password + Google
+│   │   ├── RegisterPage.vue      # Register form
+│   │   ├── CartPage.vue          # Cart dengan promo code VINTAGE10
+│   │   ├── CheckoutPage.vue      # 3-step checkout wizard
+│   │   ├── OrdersPage.vue        # Riwayat pesanan user
+│   │   ├── OrderDetailPage.vue   # Timeline status pesanan user
+│   │   ├── ProfilePage.vue       # Profil + quick links + transaksi terakhir
+│   │   ├── ProfileEditPage.vue   # Edit profil + ganti password
+│   │   ├── AddressListPage.vue   # Daftar alamat user
+│   │   ├── AddressFormPage.vue   # Tambah/edit alamat
+│   │   ├── WishlistPage.vue      # Grid wishlist
+│   │   ├── AdminSeed.vue         # Seed 16 produk sample
+│   │   ├── NotFound.vue          # 404 page
+│   │   └── admin/
+│   │       ├── DashboardPage.vue     # Statistik + recent products
+│   │       ├── ProductsPage.vue      # Table produk + search + filter
+│   │       ├── ProductFormPage.vue   # Form tambah/edit produk
+│   │       ├── CategoriesPage.vue    # CRUD kategori
+│   │       ├── OrdersPage.vue        # Semua pesanan + revenue
+│   │       └── OrderDetailPage.vue   # Detail + update status
+│   ├── App.vue                  # Root dengan page transitions (fade + translateY)
+│   ├── firebase.js              # Inisialisasi Firebase (config hardcoded)
+│   └── main.js                  # Entry point
+├── e2e/                         # (kosong) Folder untuk E2E tests
+├── dist/                        # Hasil build production
+├── public/                      # Favicon
+├── .vscode/
+│   ├── settings.json            # formatOnSave + codeActionsOnSave
+│   └── extensions.json          # Rekomendasi ekstensi VS Code
+├── firebase.json                # Firebase Hosting config + Firestore rules/indexes
+├── firestore.rules              # Security rules Firestore
+├── firestore.indexes.json       # Composite indexes (products, carts, wishlists, transactions)
+├── vite.config.js               # Vite + Vue + JSX + DevTools + Tailwind
+├── vitest.config.js             # Vitest (jsdom, exclude e2e/)
+├── playwright.config.js         # Playwright (3 browser projects, auto webServer)
+├── eslint.config.js             # ESLint flat config
+├── .oxlintrc.json               # oxlint config
+├── .prettierrc.json             # Prettier: no semi, single quotes, 100 printWidth
+├── .editorconfig                # EditorConfig (2 spaces, UTF-8, LF)
+├── jsconfig.json                # Path alias @/ → ./src/
+├── package.json                 # Dependencies & scripts
+├── AGENTS.md                    # Instruksi untuk OpenCode AI
+└── README.md                    # File ini
+```
+
+### Firestore Collections
+
+| Collection | Document ID | Isi |
+|---|---|---|
+| `products` | auto | name, category, price, stock, color, size, shipping, image, description |
+| `categories` | auto | name, createdAt |
+| `carts` | `${userId}_${productId}` | userId, productId, name, price, quantity, image, shipping, color, size |
+| `wishlists` | auto | userId, productId, createdAt |
+| `addresses` | auto | userId, label, address, city, postalCode, phone, isDefault, createdAt |
+| `reviews` | auto | productId, userId, userName, userPhoto, rating, comment, createdAt |
+| `transactions` | auto | userId, items[], shippingAddress, paymentMethod, subtotal, shipping, discount, total, status, statusHistory[], createdAt |
+
+---
+
+## Cara Instalasi & Menjalankan Project
+
+### Prerequisites
+
+- **Node.js** `^20.19.0` atau `^22.12.0`
+- **npm** (bundled dengan Node.js)
+- **Firebase project** dengan nama `fe-vue-js-feyy` (sudah terkonfigurasi)
+
+### 1. Clone & Install
 
 ```sh
 npm install
 ```
 
-### Development
+### 2. Jalankan Development Server
 
 ```sh
-npm run dev        # Vite dev server on :5173
+npm run dev
 ```
 
-### Production
+Aplikasi akan berjalan di **`http://localhost:5173`** dengan hot-reload.
+
+### 3. Build Production
 
 ```sh
-npm run build      # Build to dist/
-npm run preview    # Preview build on :4173
+npm run build       # Output ke dist/
+npm run preview     # Preview hasil build di :4173
 ```
 
-### Testing
+### 4. Testing
 
 ```sh
-npm run test:unit                          # Vitest
-npx vitest <path>                          # Single test file
-npx playwright install                     # First-time e2e setup
-npm run build && npm run test:e2e          # E2E (Playwright)
+# Unit tests (Vitest)
+npm run test:unit
+npx vitest src/path/to/test  # Single test file
+
+# E2E tests (Playwright)
+npx playwright install              # Pertama kali
+npm run test:e2e                    # Dev mode
+npm run build && npm run test:e2e   # CI mode (headless)
+npx playwright test --project=chromium --debug  # Debug mode
 ```
 
-### Lint & Format
+### 5. Linting & Formatting
 
 ```sh
-npm run lint                               # oxlint + eslint (sequential, auto-fix)
-npm run format                             # Prettier on src/
+npm run lint     # oxlint --fix → ESLint --fix (sequential)
+npm run format   # Prettier pada folder src/
 ```
 
-## Requirements
+### 6. Deploy ke Firebase Hosting
 
-- Node `^20.19.0 || >=22.12.0`
-- Firebase project: `fe-vue-js-feyy`
-
-## Project Structure
-
-```
-src/
-├── assets/                # Global styles (Tailwind import in main.css)
-├── components/            # Reusable components
-│   ├── AppNavbar.vue      # Navigation (responsive, dropdown, mobile menu)
-│   ├── ModalLogout.vue    # Logout confirmation modal
-│   ├── ProductCard.vue    # Product card with wishlist toggle
-│   ├── ProductCardSkeleton.vue
-│   └── ToastContainer.vue # Toast notifications
-├── composables/
-│   └── useToast.js        # Toast notification composable
-├── router/
-│   └── index.js           # Routes with lazy loading + auth guards
-├── store/
-│   └── index.js           # Vuex store (auth, cart, products, categories, orders, addresses, reviews)
-├── views/
-│   ├── HomePage.vue       # Catalog with hero, categories, sort, pagination
-│   ├── DetailProduct.vue  # Product detail with reviews & related products
-│   ├── LoginPage.vue      # Email/password + Google sign-in
-│   ├── RegisterPage.vue   # Register form
-│   ├── CartPage.vue       # Shopping cart with promo code
-│   ├── CheckoutPage.vue   # Multi-step checkout
-│   ├── OrdersPage.vue     # User order history
-│   ├── OrderDetailPage.vue # User order detail with timeline
-│   ├── ProfilePage.vue    # Profile with quick links
-│   ├── ProfileEditPage.vue# Edit name, photo, password
-│   ├── AddressListPage.vue# Saved addresses
-│   ├── AddressFormPage.vue# Add/edit address
-│   ├── WishlistPage.vue   # Wishlist products
-│   ├── AdminSeed.vue      # Seed 16 sample products
-│   ├── NotFound.vue       # 404 page
-│   └── admin/
-│       ├── DashboardPage.vue      # Stats cards + recent products
-│       ├── ProductsPage.vue       # Product table with stock
-│       ├── ProductFormPage.vue    # Add/edit product form
-│       ├── CategoriesPage.vue     # Category CRUD
-│       ├── OrdersPage.vue         # All orders + revenue
-│       └── OrderDetailPage.vue    # Order detail + status update
-├── App.vue               # Root with page transitions
-├── firebase.js           # Firebase init (config, auth, Firestore, Analytics)
-└── main.js               # Entry point
+```sh
+npm run build
+firebase deploy --only hosting
 ```
 
-## Firestore Collections
+### 7. Admin Access
 
-| Collection | Document ID | Purpose |
-|---|---|---|
-| `products` | auto | Catalog items with name, price, category, stock, color, size, image, description |
-| `categories` | auto | Category names for admin management |
-| `carts` | `${userId}_${productId}` | Per-user cart items with quantity |
-| `wishlists` | auto | User wishlist items (userId + productId) |
-| `addresses` | auto | User shipping addresses with label, city, phone, isDefault |
-| `reviews` | auto | Product reviews with rating, comment, userId, timestamp |
-| `transactions` | auto | Completed orders with items, address, payment method, status history |
+Hanya user dengan email **`yolo@gmail.com`** yang memiliki akses admin. Registrasi melalui aplikasi, lalu login menggunakan email tersebut untuk mengakses halaman `/admin/*`.
 
-## Routes
+---
 
-| Path | Name | Auth | Admin |
-|---|---|---|---|
-| `/` | home | — | — |
-| `/login` | login | — | — |
-| `/register` | register | — | — |
-| `/product/:id` | product | — | — |
-| `/cart` | cart | ✓ | — |
-| `/checkout` | checkout | ✓ | — |
-| `/orders` | orders | ✓ | — |
-| `/order/:id` | order-detail | ✓ | — |
-| `/profile` | profile | ✓ | — |
-| `/profile/edit` | profile-edit | ✓ | — |
-| `/profile/addresses` | addresses | ✓ | — |
-| `/profile/addresses/create` | address-create | ✓ | — |
-| `/profile/addresses/:id/edit` | address-edit | ✓ | — |
-| `/wishlist` | wishlist | ✓ | — |
-| `/admin` | admin-dashboard | ✓ | ✓ |
-| `/admin/products` | admin-products | ✓ | ✓ |
-| `/admin/products/create` | admin-products-create | ✓ | ✓ |
-| `/admin/products/:id/edit` | admin-products-edit | ✓ | ✓ |
-| `/admin/categories` | admin-categories | ✓ | ✓ |
-| `/admin/orders` | admin-orders | ✓ | ✓ |
-| `/admin/orders/:id` | admin-order-detail | ✓ | ✓ |
-| `/admin/seed` | admin-seed | ✓ | ✓ |
+## Catatan Pengembangan
 
-## Conventions
-
-- `<script setup>` + `<template>` + `<style scoped>` sort order
-- English UI strings
-- Color palette: `#009696` (primary), `#013243` (dark teal)
-- Path alias `@/` → `./src/`
-- SPA: Firebase Hosting rewrites all routes to `/index.html`
-
-## Admin Access
-
-Only `yolo@gmail.com` has admin privileges. Register via the app, then log in with that email to access `/admin/*` routes.
+| Topik | Detail |
+|---|---|
+| **Bahasa UI** | English (meskipun `<html lang="id">`) |
+| **Konvensi komponen** | Multi-word names (`AppNavbar`, `ProductCard`) |
+| **Urutan file** | `<script setup>` → `<template>` → `<style>` |
+| **Color palette** | `#009696` (primary teal), `#013243` (dark slate) — custom CSS vars `--color-brand-*` dan `--color-dark-*` |
+| **Path alias** | `@/` → `./src/` |
+| **Kode promo** | `VINTAGE10` = 10% off subtotal |
+| **Pagination** | 12 produk per halaman (client-side) |
+| **Page transitions** | Fade + translateY di `App.vue` |
+| **Firebase creds** | Hardcoded di `src/firebase.js` (tanpa `.env`) |
+| **Admin check** | Client-side via `store.getters.isAdmin` (Firestore rules tidak meng-enforce admin) |
