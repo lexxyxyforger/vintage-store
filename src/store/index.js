@@ -27,7 +27,10 @@ async function fetchRoleFromToken(user) {
   if (!user) return null
   try {
     const result = await user.getIdTokenResult()
-    return result.claims.role || 'user'
+    if (result.claims.role) return result.claims.role
+    const snap = await getDoc(doc(db, 'users', user.uid))
+    if (snap.exists() && snap.data().role) return snap.data().role
+    return 'user'
   } catch {
     return 'user'
   }
@@ -98,10 +101,16 @@ const store = createStore({
       commit('SET_USER_ROLE', role)
     },
 
-    async register({ dispatch, commit }, { email, password, name }) {
+    async register({ dispatch, commit }, { email, password, name, role }) {
       const cred = await createUserWithEmailAndPassword(auth, email, password)
       await updateProfile(cred.user, { displayName: name })
       commit('SET_USER', cred.user)
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        email,
+        displayName: name,
+        role: role || 'user',
+        createdAt: serverTimestamp(),
+      })
       await dispatch('fetchUserRole')
       return cred.user
     },
@@ -113,9 +122,17 @@ const store = createStore({
       return cred.user
     },
 
-    async loginWithGoogle({ dispatch, commit }) {
+    async loginWithGoogle({ dispatch, commit }, { role } = {}) {
       const cred = await signInWithPopup(auth, googleProvider)
       commit('SET_USER', cred.user)
+      if (role) {
+        await setDoc(doc(db, 'users', cred.user.uid), {
+          email: cred.user.email,
+          displayName: cred.user.displayName,
+          role,
+          createdAt: serverTimestamp(),
+        }, { merge: true })
+      }
       await dispatch('fetchUserRole')
       return cred.user
     },
