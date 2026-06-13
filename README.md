@@ -18,18 +18,18 @@
 
 ## Fitur Utama
 
+### 🔐 Autentikasi & Registrasi
+- **Email/password** — registrasi dengan pilihan peran (Pembeli / Penjual).
+- **Google OAuth** — tersedia di halaman login **dan** registrasi, dengan pilihan peran yang sama.
+- **Session persistence** — status login tersimpan meskipun halaman di-refresh.
+- **Route guards** — proteksi halaman user (`requiresAuth`), seller (`requiresSeller`), dan superadmin (`requiresSuperadmin`) dengan redirect otomatis.
+
 ### 👤 Publik
 - **Katalog produk** dengan tampilan grid responsif (1–4 kolom), filter kategori, dan urutan (nama, harga termurah/termahal, terbaru).
 - **Pencarian produk** via navbar atau query parameter `?search=`.
 - **Halaman detail produk** — pemilihan warna/ukuran, quantity picker, badge stok, dan gambar preview dengan shimmer loading.
 - **Rating & review** — bintang interaktif (1–5), komentar, avatar user, dan jumlah rating rata-rata.
 - **Produk terkait** — up to 4 produk dari kategori yang sama.
-
-### 🔐 Autentikasi
-- **Email/password** — registrasi dan login.
-- **Google OAuth** — login satu klik.
-- **Session persistence** — status login tersimpan meskipun halaman di-refresh.
-- **Route guards** — proteksi halaman user (`requiresAuth`) dan admin (`requiresAdmin`) dengan redirect otomatis.
 
 ### 👤 User Area (wajib login)
 - **Manajemen profil** — edit nama, photo URL, dan ganti password (dengan validasi konfirmasi).
@@ -173,7 +173,7 @@ tugas-akhir-ta/
 
 | Collection | Document ID | Isi |
 |---|---|---|
-| `users` | `${uid}` | email, displayName, photoURL, role (legacy — custom claims lebih diprioritaskan) |
+| `users` | `${uid}` | email, displayName, photoURL, role (dari registrasi), createdAt |
 | `products` | auto | name, category, price, stock, color, size, shipping, image, description, sellerId, sellerName |
 | `carts` | `${userId}_${productId}` | userId, productId, name, price, quantity, image, shipping, color, size |
 | `wishlists` | auto | userId, productId, createdAt |
@@ -244,7 +244,7 @@ Aplikasi langsung terdeploy di **https://fe-vue-js-feyy.web.app**.
 
 ### 7. Role-Based Access
 
-Aplikasi memiliki **3 level akses** berdasarkan **Firebase Auth custom claims** (field `role` di token):
+Aplikasi memiliki **3 level akses**:
 
 | Role | Akses |
 |---|---|
@@ -252,15 +252,18 @@ Aplikasi memiliki **3 level akses** berdasarkan **Firebase Auth custom claims** 
 | `seller` | Halaman user + `/seller/*` (kelola produk & pesanan sendiri) |
 | `superadmin` | Segala akses + `/superadmin/*` (kelola seluruh platform) |
 
-**Setup awal:**
-1. Role disimpan sebagai custom claims di Firebase Auth — **tidak pakai Firestore**.
-2. Setelah login, role dibaca dari `user.getIdTokenResult().claims.role`.
-3. Ubah role via CLI (butuh service account key):
-   ```sh
-   npm run bootstrap:superadmin email@example.com seller
-   npm run bootstrap:superadmin email@example.com superadmin
-   ```
-4. Superadmin juga bisa generate perintah CLI dari halaman `/superadmin/sellers`.
+**Saat registrasi**, pengguna bisa memilih peran **Pembeli** (`user`) atau **Penjual** (`seller`). Role disimpan ke Firestore `users/{uid}.role`.
+
+**Prioritas role:**
+1. **Custom claims** (via Admin SDK) — paling tinggi, untuk superadmin/seller yang di-bootstrap
+2. **Firestore `users/{uid}.role`** — fallback untuk pendaftaran mandiri
+3. Default `user`
+
+**Mengubah role via CLI (butuh service account key):**
+```sh
+npm run bootstrap:superadmin email@example.com seller
+npm run bootstrap:superadmin email@example.com superadmin
+```
 
 ---
 
@@ -277,6 +280,7 @@ Aplikasi memiliki **3 level akses** berdasarkan **Firebase Auth custom claims** 
 | **Pagination** | 12 produk per halaman (client-side) |
 | **Page transitions** | Fade + translateY di `App.vue` |
 | **Firebase creds** | Hardcoded di `src/firebase.js` (tanpa `.env`) |
-| **Role check** | Client-side via `store.getters.isSuperadmin` / `store.getters.isSeller` (dari Auth custom claims) |
-| **Role default** | Semua user baru mendapat role `user` (custom claims di-set via Admin SDK) |
+| **Role check** | Client-side via `store.getters.isSuperadmin` / `store.getters.isSeller` (custom claims → Firestore fallback) |
+| **Role registrasi** | Pengguna pilih Pembeli (`user`) / Penjual (`seller`) saat daftar; disimpan ke Firestore `users/{uid}.role` |
+| **Prioritas role** | Custom claims (Admin SDK) > Firestore `users/{uid}` > default `user` |
 | **Bootstrap role** | `npm run bootstrap:superadmin <email> <role>` — pakai Admin SDK service account |

@@ -42,7 +42,9 @@ Role: `npm run bootstrap:superadmin <email> [role]` — needs service account ke
 - **Firebase creds** hardcoded in `src/firebase.js` — no `.env` files.
 - **`fetchProducts` is cached** — reads Firestore once per session; call `refreshProducts` to force re-fetch.
 - **Auth**: Firebase Auth (email/password + Google). Router `beforeEach` waits for `authLoading` to resolve before enforcing `requiresAuth`.
-- **Roles**: `superadmin`, `seller`, `user` — Firebase Auth custom claims, not Firestore. Default `user`. Set via `npm run bootstrap:superadmin` (Admin SDK, needs service account key at project root — gitignored).
+- **Roles**: `superadmin`, `seller`, `user`. Priority: custom claims (Admin SDK) > Firestore `users/{uid}.role` > default `user`.
+  - Register page: user memilih Pembeli (`user`) / Penjual (`seller`), disimpan ke Firestore oleh `register` / `loginWithGoogle` action.
+  - CLI override: `npm run bootstrap:superadmin <email> <role>` via Admin SDK (service account key gitignored).
 - **Route guards**: `meta: { requiresAuth: true }`, `requiresSuperadmin`, `requiresSeller` in router `beforeEach`.
 - **Routes** all lazy-loaded. Superadmin at `/superadmin/*`, Seller at `/seller/*`, User at `/profile/*`.
 - **SPA**: Firebase Hosting rewrites all routes to `/index.html`.
@@ -54,7 +56,7 @@ Role: `npm run bootstrap:superadmin <email> [role]` — needs service account ke
 
 - Multi-word component names (`AppNavbar`, `ModalLogout`, `ProductCard`)
 - Sort order: `<script setup>` → `<template>` → `<style>`
-- UI strings are English (despite `index.html` having `lang="id"`)
+- UI strings are Indonesian
 - Color palette: `#009696` (primary), `#013243` (dark teal) — custom theme vars in `main.css` (`--color-brand-*`, `--color-dark-*`)
 - Node `^20.19.0 || >=22.12.0`
 - Service account key (`*-firebase-adminsdk-*.json`) gitignored — must be copied to project root for `bootstrap:superadmin`
